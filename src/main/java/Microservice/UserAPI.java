@@ -25,7 +25,7 @@ public class UserAPI {
     @RequestMapping(value = "/byGitHubURL", method = RequestMethod.GET)
     @ResponseBody
     public String runScanByGitHubURL(@RequestParam("gitURL") String gitURL, @RequestParam("branch") String branch) throws GitAPIException, MavenInvocationException {
-        //Git git=GitAPI.gitClone(gitURL,"/home/deshani/Documents/newFolder",branch);
+        Git git=GitAPI.gitClone(gitURL,"/home/deshani/Documents/newFolder",branch);
 
         MavenClient.buildDependencyCheck("/home/deshani/Documents/newFolder/pom.xml");
         return "success";
