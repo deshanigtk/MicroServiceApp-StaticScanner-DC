@@ -1,4 +1,4 @@
-package Microservice;
+package com.deshani;
 
 import org.springframework.boot.SpringApplication;
 
