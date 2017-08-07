@@ -1,5 +1,5 @@
-Microservice/MavenClient.class
-Microservice/HttpClientAPI.class
-Microservice/App.class
-Microservice/UserAPI.class
-Microservice/GitAPI.class
+com/deshani/MavenClient.class
+com/deshani/App.class
+com/deshani/GitClient.class
+com/deshani/ReportHandler.class
+com/deshani/UserAPI.class

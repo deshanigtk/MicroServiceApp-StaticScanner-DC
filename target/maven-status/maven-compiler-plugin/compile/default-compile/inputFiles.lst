@@ -1,5 +1,5 @@
-/home/deshani/Documents/microServiceApp/src/main/java/Microservice/HttpClientAPI.java
-/home/deshani/Documents/microServiceApp/src/main/java/Microservice/MavenClient.java
-/home/deshani/Documents/microServiceApp/src/main/java/Microservice/GitAPI.java
-/home/deshani/Documents/microServiceApp/src/main/java/Microservice/UserAPI.java
-/home/deshani/Documents/microServiceApp/src/main/java/Microservice/App.java
+/home/deshani/Documents/microServiceApp/src/main/java/com/deshani/GitClient.java
+/home/deshani/Documents/microServiceApp/src/main/java/com/deshani/App.java
+/home/deshani/Documents/microServiceApp/src/main/java/com/deshani/UserAPI.java
+/home/deshani/Documents/microServiceApp/src/main/java/com/deshani/ReportHandler.java
+/home/deshani/Documents/microServiceApp/src/main/java/com/deshani/MavenClient.java
