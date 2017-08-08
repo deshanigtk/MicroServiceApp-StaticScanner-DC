@@ -5,7 +5,6 @@ import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -15,7 +14,7 @@ import java.util.zip.ZipOutputStream;
 /**
  * Created by deshani on 8/4/17.
  */
-public class ReportHandler {
+class ReportHandler {
 
     static void findFilesAndMoveToFolder(String sourcePath, String destinationPath, String fileName) throws IOException {
         File dir = new File(destinationPath);

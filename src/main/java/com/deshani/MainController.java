@@ -41,8 +41,8 @@ public class MainController {
 
     static void runFindSecBugs(String productPath) throws TransformerException, IOException, SAXException, ParserConfigurationException, GitAPIException, MavenInvocationException {
 
-        FileUtils.copyFileToDirectory("findbugs-security-exclude.xml", productPath);
-        FileUtils.copyFileToDirectory("findbugs-security-include.xml", productPath);
+        FileUtils.copyFileToDirectory("com.deshani/findbugs-security-exclude.xml", productPath);
+        FileUtils.copyFileToDirectory("com.deshani/findbugs-security-include.xml", productPath);
 
         File file = new File(productPath + "/pom.xml");
 

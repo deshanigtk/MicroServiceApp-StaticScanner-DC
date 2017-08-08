@@ -1,6 +1,7 @@
 com/deshani/ReportHandler.class
 com/deshani/UserAPI.class
 com/deshani/MavenClient.class
+com/deshani/XMLHandler.class
 com/deshani/MainController.class
 com/deshani/App.class
 com/deshani/GitClient.class
