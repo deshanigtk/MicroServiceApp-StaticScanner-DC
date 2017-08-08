@@ -1,23 +1,14 @@
 package com.deshani;
 
-import com.sun.org.apache.xerces.internal.dom.ElementNSImpl;
 import org.w3c.dom.*;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.File;
 
 /**
  * Created by deshani on 8/7/17.
  */
 public class XMLHandler {
 
-    private static void iterateNode(Node node, Document document) throws TransformerException {
+    public static Document iterateNode(Node node, Document document) throws TransformerException {
         NodeList nodeList = node.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node currentNode = nodeList.item(i);
@@ -30,9 +21,10 @@ public class XMLHandler {
                 iterateNode(currentNode, document);
             }
         }
+        return document;
     }
 
-    private static void appendFindSecBugsPlugin(Document document, Element rootElement) throws TransformerException {
+    private static Document appendFindSecBugsPlugin(Document document, Element rootElement) throws TransformerException {
 
         //Get the <plugins> element that available under <build> element
         Element pluginsElement = (Element) rootElement.getElementsByTagName("plugins").item(0);
@@ -116,31 +108,8 @@ public class XMLHandler {
 
         pluginsElement.appendChild(pluginElement);
 
-        DOMSource source = new DOMSource(document);
-
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
-        StreamResult result = new StreamResult("/home/deshani/Documents/IS/product-is/pom.xml");
-        transformer.transform(source, result);
+        return document;
 
     }
 
-    public static void main(String[] args) {
-
-        try {
-
-            File file = new File("/home/deshani/Documents/IS/product-is/pom.xml");
-
-            DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-
-            Document doc = dBuilder.parse(file);
-            iterateNode(doc.getDocumentElement(), doc);
-
-        } catch (Exception e)
-
-        {
-            System.out.println(e.getMessage());
-        }
-
-    }
 }

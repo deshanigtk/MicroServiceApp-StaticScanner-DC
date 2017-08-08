@@ -29,4 +29,20 @@ class MavenClient {
         invoker.execute(request);
     }
 
+    static void compile(String pomFilePath) throws MavenInvocationException {
+        InvocationRequest request = new DefaultInvocationRequest();
+        request.setPomFile(new File(pomFilePath));
+        request.setGoals(Arrays.asList("compile"));
+
+        Invoker invoker = new DefaultInvoker();
+        invoker.execute(request);
+    }
+    static void buildFindSecBugs(String pomFilePath) throws MavenInvocationException {
+        InvocationRequest request = new DefaultInvocationRequest();
+        request.setPomFile(new File(pomFilePath));
+        request.setGoals(Arrays.asList("findbugs:findbugs"));
+
+        Invoker invoker = new DefaultInvoker();
+        invoker.execute(request);
+    }
 }

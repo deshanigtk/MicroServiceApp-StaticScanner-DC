@@ -62,17 +62,4 @@ public class ReportHandler {
         }
         fis.close();
     }
-
-
-    public static void main(String[] args) throws IOException {
-
-        String sourceFile = "/home/deshani/Documents/IS/Dependency-Check-Reports";
-        FileOutputStream fos = new FileOutputStream("/home/deshani/Documents/IS/Dependency-Check-Reports.zip");
-        ZipOutputStream zipOut = new ZipOutputStream(fos);
-        File fileToZip = new File(sourceFile);
-
-        zipFile(fileToZip, fileToZip.getName(), zipOut);
-        zipOut.close();
-        fos.close();
-    }
 }
