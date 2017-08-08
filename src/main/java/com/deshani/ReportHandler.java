@@ -17,13 +17,13 @@ import java.util.zip.ZipOutputStream;
  */
 public class ReportHandler {
 
-    public static void findFiles(String sourcePath, String destinationPath) throws IOException {
+    public static void findFilesAndMoveToFolder(String sourcePath, String destinationPath, String fileName) throws IOException {
         File dir = new File(destinationPath);
         dir.mkdir();
 
         Files.find(Paths.get(sourcePath),
                 Integer.MAX_VALUE,
-                (filePath, fileAttr) -> filePath.getFileName().toString().equals("dependency-check-report.html")).forEach((f) -> {
+                (filePath, fileAttr) -> filePath.getFileName().toString().equals(fileName)).forEach((f) -> {
             try {
                 File file = f.toFile();
 
@@ -64,29 +64,7 @@ public class ReportHandler {
     }
 
 
-    public static void walk(String path) {
-
-        File root = new File(path);
-        File[] list = root.listFiles();
-
-        if (list == null) return;
-
-        for (File f : list) {
-            if (f.isDirectory()) {
-                walk(f.getAbsolutePath());
-                if (f.getName().equals("dependency-check-report.html")) {
-                    System.out.println("Dir:" + f.getAbsoluteFile());
-                }
-            } else {
-                if (f.getName().equals("dependency-check-report.html")) {
-                    System.out.println("Dir:" + f.getAbsoluteFile());
-                }
-            }
-        }
-    }
-
     public static void main(String[] args) throws IOException {
-       //findFiles("/home/deshani/Documents/IS/product-is/", "/home/deshani/Documents/IS/Dependency-Check-Reports");
 
         String sourceFile = "/home/deshani/Documents/IS/Dependency-Check-Reports";
         FileOutputStream fos = new FileOutputStream("/home/deshani/Documents/IS/Dependency-Check-Reports.zip");

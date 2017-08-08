@@ -28,19 +28,7 @@ public class UserAPI {
     @RequestMapping(value = "dependencyCheck/byGitURL", method = RequestMethod.GET)
     @ResponseBody
     public String runDependencyCheckByGitURL(@RequestParam("gitURL") String gitURL, @RequestParam("branch") String branch) throws GitAPIException, MavenInvocationException, IOException {
-        Git git = GitClient.gitClone(gitURL, branch, "~/opt/Product");
-
-        MavenClient.buildDependencyCheck("~/opt/Product/pom.xml");
-        ReportHandler.findFiles("~/opt/Product", "~/opt/Product/Dependency-Check-Reports");
-
-        String sourceFile = "~/opt/Product/Dependency-Check-Reports";
-        FileOutputStream fos = new FileOutputStream("~/opt/Product/Dependency-Check-Reports.zip");
-        ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream("~/opt/Product/Dependency-Check-Reports.zip"));
-        File fileToZip = new File(sourceFile);
-
-        ReportHandler.zipFile(fileToZip, fileToZip.getName(), zipOut);
-        zipOut.close();
-        fos.close();
+        MainController.runDependencyCheck(gitURL,branch,"~/opt/Product");
         return "success";
     }
 
@@ -48,6 +36,7 @@ public class UserAPI {
     @ResponseBody
     public String runFindSecBugsByGitURL(@RequestParam("gitURL") String gitURL, @RequestParam("branch") String branch) throws GitAPIException, MavenInvocationException {
         Git git = GitClient.gitClone(gitURL, branch, "~/opt/Product");
+
 
         // MavenClient.buildDependencyCheck("/opt/Product/pom.xml");
         return String.valueOf(GitClient.gitStatus(git));
