@@ -1,6 +1,7 @@
 package com.deshani;
 
 import org.apache.maven.shared.invoker.MavenInvocationException;
+import org.codehaus.plexus.util.FileUtils;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -23,16 +24,12 @@ import java.util.zip.ZipOutputStream;
  */
 public class MainController {
 
-    private static String dependencyCheckReportHtml = "dependency-check-report.html";
-
-    static void runDependencyCheck(String gitURL, String branch, String productPath) throws IOException, GitAPIException, MavenInvocationException {
-        GitClient.gitClone(gitURL, branch, productPath);
-
-        MavenClient.buildDependencyCheck(productPath + "/pom.xml");
+    static void runDependencyCheck( String productPath) throws IOException, GitAPIException, MavenInvocationException {
+       MavenClient.buildDependencyCheck(productPath + "/pom.xml");
 
         String reportsFolderPath = productPath + "/Dependency-Check-Reports";
 
-        ReportHandler.findFilesAndMoveToFolder(productPath, reportsFolderPath, dependencyCheckReportHtml);
+        ReportHandler.findFilesAndMoveToFolder(productPath, reportsFolderPath, "dependency-check-report.html");
         FileOutputStream fos = new FileOutputStream(reportsFolderPath + ".zip");
         ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(reportsFolderPath + ".zip"));
         File fileToZip = new File(reportsFolderPath);
@@ -42,8 +39,11 @@ public class MainController {
         fos.close();
     }
 
-    static void runFindSecBugs(String gitURL, String branch, String productPath) throws TransformerException, IOException, SAXException, ParserConfigurationException, GitAPIException, MavenInvocationException {
-        GitClient.gitClone(gitURL, branch, productPath);
+    static void runFindSecBugs(String productPath) throws TransformerException, IOException, SAXException, ParserConfigurationException, GitAPIException, MavenInvocationException {
+
+        FileUtils.copyFileToDirectory("findbugs-security-exclude.xml", productPath);
+        FileUtils.copyFileToDirectory("findbugs-security-include.xml", productPath);
+
         File file = new File(productPath + "/pom.xml");
 
         DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -58,8 +58,8 @@ public class MainController {
         StreamResult result = new StreamResult(productPath + "/pom.xml");
         transformer.transform(source, result);
 
-        MavenClient.compile(productPath+"/pom.xml");
-        MavenClient.buildFindSecBugs(productPath+"/pom.xml");
+        MavenClient.compile(productPath + "/pom.xml");
+        MavenClient.buildFindSecBugs(productPath + "/pom.xml");
 
         String reportsFolderPath = productPath + "/Findbugs-Reports";
 
@@ -71,5 +71,9 @@ public class MainController {
         ReportHandler.zipFile(fileToZip, fileToZip.getName(), zipOut);
         zipOut.close();
         fos.close();
+    }
+
+    static void gitClone(String url, String branch, String filePath) throws GitAPIException {
+        GitClient.gitClone(url,branch, filePath);
     }
 }

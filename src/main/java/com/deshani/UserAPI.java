@@ -4,14 +4,12 @@ import org.apache.maven.shared.invoker.MavenInvocationException;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -24,17 +22,32 @@ import java.io.IOException;
 @RequestMapping("staticScanner/runScan")
 public class UserAPI {
 
-    @RequestMapping(value = "dependencyCheck/byGitURL", method = RequestMethod.GET)
+    private static String productPath = "/home/deshani/Documents/Product";
+
+    @RequestMapping(value = "dependencyCheck", method = RequestMethod.GET)
     @ResponseBody
-    public String runDependencyCheckByGitURL(@RequestParam("gitURL") String gitURL, @RequestParam("branch") String branch) throws GitAPIException, MavenInvocationException, IOException {
-        MainController.runDependencyCheck(gitURL,branch,"/home/deshani/Documents/Product");
-        return "success";
+    public String runDependencyCheckByGitURL() throws GitAPIException, MavenInvocationException, IOException {
+        if (new File(productPath).exists()) {
+            MainController.runDependencyCheck(productPath);
+            return "success";
+        }
+        return "Product is not found";
     }
 
-    @RequestMapping(value = "findSecBugs/byGitURL", method = RequestMethod.GET)
+    @RequestMapping(value = "findSecBugs", method = RequestMethod.GET)
     @ResponseBody
-    public String runFindSecBugsByGitURL(@RequestParam("gitURL") String gitURL, @RequestParam("branch") String branch) throws GitAPIException, MavenInvocationException, IOException, ParserConfigurationException, SAXException, TransformerException {
-        MainController.runFindSecBugs(gitURL,branch,"/home/deshani/Documents/Product");
+    public String runFindSecBugsByGitURL() throws MavenInvocationException, IOException, ParserConfigurationException, SAXException, TransformerException, GitAPIException {
+        if (new File(productPath).exists()) {
+            MainController.runFindSecBugs(productPath);
+            return "success";
+        }
+        return "Product is not found";
+    }
+
+    @RequestMapping(value = "cloneProduct", method = RequestMethod.GET)
+    @ResponseBody
+    public String gitClone(@RequestParam("gitUrl") String url, @RequestParam("branch") String branch) throws GitAPIException {
+        MainController.gitClone(url, branch, productPath);
         return "success";
     }
 

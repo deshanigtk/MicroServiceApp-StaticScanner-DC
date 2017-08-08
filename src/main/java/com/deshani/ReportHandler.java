@@ -17,7 +17,7 @@ import java.util.zip.ZipOutputStream;
  */
 public class ReportHandler {
 
-    public static void findFilesAndMoveToFolder(String sourcePath, String destinationPath, String fileName) throws IOException {
+    static void findFilesAndMoveToFolder(String sourcePath, String destinationPath, String fileName) throws IOException {
         File dir = new File(destinationPath);
         dir.mkdir();
 
@@ -41,7 +41,7 @@ public class ReportHandler {
 
     }
 
-    public static void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
+    static void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
         if (fileToZip.isHidden()) {
             return;
         }
@@ -62,4 +62,5 @@ public class ReportHandler {
         }
         fis.close();
     }
+
 }
