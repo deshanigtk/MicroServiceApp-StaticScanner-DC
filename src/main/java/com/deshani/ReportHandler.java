@@ -60,6 +60,7 @@ class ReportHandler {
             zipOut.write(bytes, 0, length);
         }
         fis.close();
+
     }
 
 }

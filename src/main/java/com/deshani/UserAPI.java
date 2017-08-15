@@ -11,6 +11,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 /**
  * Created by deshani on 8/1/17.
@@ -22,7 +23,7 @@ import java.io.IOException;
 @RequestMapping("staticScanner/runScan")
 public class UserAPI {
 
-    private static String productPath = "/opt/Product";
+    private static String productPath = "/home/deshani/Documents/Product";
 
     @RequestMapping(value = "dependencyCheck", method = RequestMethod.GET)
     @ResponseBody
@@ -36,7 +37,7 @@ public class UserAPI {
 
     @RequestMapping(value = "findSecBugs", method = RequestMethod.GET)
     @ResponseBody
-    public String runFindSecBugsByGitURL() throws MavenInvocationException, IOException, ParserConfigurationException, SAXException, TransformerException, GitAPIException {
+    public String runFindSecBugsByGitURL() throws MavenInvocationException, IOException, ParserConfigurationException, SAXException, TransformerException, GitAPIException, URISyntaxException {
         if (new File(productPath).exists()) {
             MainController.runFindSecBugs(productPath);
             return "success";

@@ -17,6 +17,8 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.zip.ZipOutputStream;
 
 /**
@@ -24,12 +26,13 @@ import java.util.zip.ZipOutputStream;
  */
 public class MainController {
 
-    static void runDependencyCheck( String productPath) throws IOException, GitAPIException, MavenInvocationException {
-       MavenClient.buildDependencyCheck(productPath + "/pom.xml");
+    static void runDependencyCheck(String productPath) throws IOException, GitAPIException, MavenInvocationException {
+        MavenClient.buildDependencyCheck(productPath + "/pom.xml");
 
         String reportsFolderPath = productPath + "/Dependency-Check-Reports";
 
         ReportHandler.findFilesAndMoveToFolder(productPath, reportsFolderPath, "dependency-check-report.html");
+
         FileOutputStream fos = new FileOutputStream(reportsFolderPath + ".zip");
         ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(reportsFolderPath + ".zip"));
         File fileToZip = new File(reportsFolderPath);
@@ -37,12 +40,27 @@ public class MainController {
         ReportHandler.zipFile(fileToZip, fileToZip.getName(), zipOut);
         zipOut.close();
         fos.close();
+
     }
 
-    static void runFindSecBugs(String productPath) throws TransformerException, IOException, SAXException, ParserConfigurationException, GitAPIException, MavenInvocationException {
+    static void runFindSecBugs(String productPath) throws TransformerException, IOException, SAXException, ParserConfigurationException, GitAPIException, MavenInvocationException, URISyntaxException {
 
-        FileUtils.copyFileToDirectory("com.deshani/findbugs-security-exclude.xml", productPath);
-        FileUtils.copyFileToDirectory("com.deshani/findbugs-security-include.xml", productPath);
+
+        URL findBugsSecExcludeFileUrl = MainController.class.getClassLoader().getResource("findbugs-security-exclude.xml");
+        File findBugsSecExcludeFile = null;
+
+        if (findBugsSecExcludeFileUrl != null) {
+            findBugsSecExcludeFile = new File(findBugsSecExcludeFileUrl.toURI());
+        }
+        URL findBugsSecIncludeFileUrl = MainController.class.getClassLoader().getResource("findbugs-security-include.xml");
+        File findBugsSecIncludeFile = null;
+
+        if (findBugsSecIncludeFileUrl != null) {
+            findBugsSecIncludeFile = new File(findBugsSecIncludeFileUrl.toURI());
+        }
+
+        FileUtils.copyFileToDirectory(findBugsSecExcludeFile, new File(productPath));
+        FileUtils.copyFileToDirectory(findBugsSecIncludeFile, new File(productPath));
 
         File file = new File(productPath + "/pom.xml");
 
@@ -71,9 +89,13 @@ public class MainController {
         ReportHandler.zipFile(fileToZip, fileToZip.getName(), zipOut);
         zipOut.close();
         fos.close();
+
+
     }
 
     static void gitClone(String url, String branch, String filePath) throws GitAPIException {
-        GitClient.gitClone(url,branch, filePath);
+        GitClient.gitClone(url, branch, filePath);
     }
+
 }
+
