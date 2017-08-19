@@ -23,7 +23,7 @@ import java.net.URISyntaxException;
 @RequestMapping("staticScanner/runScan")
 public class UserAPI {
 
-    private static String productPath = "/home/deshani/Documents/Product";
+    private static String productPath = "/home/deshani/Documents/IS/wso2is-5.3.0";
 
     @RequestMapping(value = "dependencyCheck", method = RequestMethod.GET)
     @ResponseBody
@@ -47,9 +47,9 @@ public class UserAPI {
 
     @RequestMapping(value = "cloneProduct", method = RequestMethod.GET)
     @ResponseBody
-    public String gitClone(@RequestParam("gitUrl") String url, @RequestParam("branch") String branch) throws GitAPIException {
-        MainController.gitClone(url, branch, productPath);
-        return "success";
+    public boolean gitClone(@RequestParam("gitUrl") String url, @RequestParam("branch") String branch) throws GitAPIException, IOException {
+        return MainController.gitClone(url, branch, productPath);
+
     }
 
 }

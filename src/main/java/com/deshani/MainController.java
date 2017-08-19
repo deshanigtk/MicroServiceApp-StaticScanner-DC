@@ -2,6 +2,7 @@ package com.deshani;
 
 import org.apache.maven.shared.invoker.MavenInvocationException;
 import org.codehaus.plexus.util.FileUtils;
+import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -14,9 +15,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.zip.ZipOutputStream;
@@ -43,15 +42,18 @@ public class MainController {
 
     }
 
-    static void runFindSecBugs(String productPath) throws TransformerException, IOException, SAXException, ParserConfigurationException, GitAPIException, MavenInvocationException, URISyntaxException {
+    static boolean runFindSecBugs(String productPath) throws TransformerException, IOException, SAXException, ParserConfigurationException, GitAPIException, MavenInvocationException, URISyntaxException {
 
+        Boolean success = false;
 
-        URL findBugsSecExcludeFileUrl = MainController.class.getClassLoader().getResource("findbugs-security-exclude.xml");
+        URL findBugsSecExcludeFileInputStream = MainController.class.getClassLoader().getResource("findbugs-security-exclude.xml");
+        System.out.println(findBugsSecExcludeFileInputStream);
         File findBugsSecExcludeFile = null;
 
-        if (findBugsSecExcludeFileUrl != null) {
-            findBugsSecExcludeFile = new File(findBugsSecExcludeFileUrl.toURI());
+        if (findBugsSecExcludeFileInputStream != null) {
+            findBugsSecExcludeFile = new File(findBugsSecExcludeFileInputStream.toURI());
         }
+
         URL findBugsSecIncludeFileUrl = MainController.class.getClassLoader().getResource("findbugs-security-include.xml");
         File findBugsSecIncludeFile = null;
 
@@ -59,43 +61,63 @@ public class MainController {
             findBugsSecIncludeFile = new File(findBugsSecIncludeFileUrl.toURI());
         }
 
-        FileUtils.copyFileToDirectory(findBugsSecExcludeFile, new File(productPath));
-        FileUtils.copyFileToDirectory(findBugsSecIncludeFile, new File(productPath));
+        if (findBugsSecExcludeFile != null && findBugsSecIncludeFile != null) {
+            FileUtils.copyFileToDirectory(findBugsSecExcludeFile, new File(productPath));
+            FileUtils.copyFileToDirectory(findBugsSecIncludeFile, new File(productPath));
 
-        File file = new File(productPath + "/pom.xml");
+            File file = new File(productPath + "/pom.xml");
 
-        DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
-        Document document = dBuilder.parse(file);
-        document = XMLHandler.iterateNode(document.getDocumentElement(), document);
+            Document document = dBuilder.parse(file);
+            document = XMLHandler.iterateNode(document.getDocumentElement(), document);
 
-        DOMSource source = new DOMSource(document);
+            DOMSource source = new DOMSource(document);
 
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
-        StreamResult result = new StreamResult(productPath + "/pom.xml");
-        transformer.transform(source, result);
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            StreamResult result = new StreamResult(productPath + "/pom.xml");
+            transformer.transform(source, result);
 
-        MavenClient.compile(productPath + "/pom.xml");
-        MavenClient.buildFindSecBugs(productPath + "/pom.xml");
+            MavenClient.compile(productPath + "/pom.xml");
+            MavenClient.buildFindSecBugs(productPath + "/pom.xml");
 
-        String reportsFolderPath = productPath + "/Findbugs-Reports";
+            String reportsFolderPath = productPath + "/Findbugs-Reports";
 
-        ReportHandler.findFilesAndMoveToFolder(productPath, reportsFolderPath, "findbugsXml.xml");
-        FileOutputStream fos = new FileOutputStream(reportsFolderPath + ".zip");
-        ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(reportsFolderPath + ".zip"));
-        File fileToZip = new File(reportsFolderPath);
+            ReportHandler.findFilesAndMoveToFolder(productPath, reportsFolderPath, "findbugsXml.xml");
+            FileOutputStream fos = new FileOutputStream(reportsFolderPath + ".zip");
+            ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(reportsFolderPath + ".zip"));
+            File fileToZip = new File(reportsFolderPath);
 
-        ReportHandler.zipFile(fileToZip, fileToZip.getName(), zipOut);
-        zipOut.close();
-        fos.close();
+            ReportHandler.zipFile(fileToZip, fileToZip.getName(), zipOut);
+            zipOut.close();
+            fos.close();
 
-
+            success = true;
+        }
+        return success;
     }
 
-    static void gitClone(String url, String branch, String filePath) throws GitAPIException {
-        GitClient.gitClone(url, branch, filePath);
+    static boolean gitClone(String url, String branch, String productPath) throws GitAPIException, IOException {
+        Git git;
+        if (new File(productPath).exists()) {
+            git = GitClient.gitOpen(productPath);
+            if (!GitClient.hasAtLeastOneReference(git.getRepository())) {
+                FileUtils.deleteDirectory(new File(productPath));
+                git = GitClient.gitClone(url, branch, productPath);
+            }
+
+        } else {
+            git = GitClient.gitClone(url, branch, productPath);
+        }
+        return GitClient.hasAtLeastOneReference(git.getRepository());
     }
 
+    public static void main1(String[] args) throws GitAPIException, IOException {
+        String url = "https://github.com/gabrielf/maven-samples";
+        String branch = "master";
+        String productPath = "/home/deshani/Documents/Product-old";
+        System.out.println(gitClone(url, "6.0", productPath));
+    }
 }
 
