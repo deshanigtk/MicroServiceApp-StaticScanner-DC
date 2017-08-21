@@ -26,8 +26,8 @@ class ReportHandler {
             try {
                 File file = f.toFile();
 
-                String newFileName = file.getAbsolutePath().replace(sourcePath, "").replace("/", "_");
-                File newFile = new File(destinationPath + "/" + newFileName);
+                String newFileName = file.getAbsolutePath().replace(sourcePath, Constant.NULL_STRING).replace(Constant.SLASH, Constant.UNDERSCORE);
+                File newFile = new File(destinationPath + Constant.SLASH + newFileName);
 
                 file.renameTo(newFile);
                 FileUtils.copyFileToDirectory(newFile, dir);
@@ -47,7 +47,7 @@ class ReportHandler {
         if (fileToZip.isDirectory()) {
             File[] children = fileToZip.listFiles();
             for (File childFile : children) {
-                zipFile(childFile, fileName + "/" + childFile.getName(), zipOut);
+                zipFile(childFile, fileName + Constant.SLASH + childFile.getName(), zipOut);
             }
             return;
         }

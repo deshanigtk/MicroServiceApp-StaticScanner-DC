@@ -20,10 +20,10 @@ import java.net.URISyntaxException;
 
 @Controller
 @EnableAutoConfiguration
-@RequestMapping("staticScanner/runScan")
+@RequestMapping("staticScanner/")
 public class UserAPI {
 
-    private static String productPath = "/home/deshani/Documents/IS/wso2is-5.3.0";
+    private static String productPath = "/home/deshani/Documents/IS/product-is";
 
     @RequestMapping(value = "dependencyCheck", method = RequestMethod.GET)
     @ResponseBody

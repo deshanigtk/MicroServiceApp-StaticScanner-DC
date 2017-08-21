@@ -17,7 +17,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.zip.ZipOutputStream;
 
 /**
@@ -26,14 +25,14 @@ import java.util.zip.ZipOutputStream;
 public class MainController {
 
     static void runDependencyCheck(String productPath) throws IOException, GitAPIException, MavenInvocationException {
-        MavenClient.buildDependencyCheck(productPath + "/pom.xml");
+        MavenClient.buildDependencyCheck(productPath + Constant.SLASH + Constant.POM_FILE);
 
-        String reportsFolderPath = productPath + "/Dependency-Check-Reports";
+        String reportsFolderPath = productPath + Constant.SLASH + Constant.DEPENDENCY_CHECK_REPORTS_FOLDER;
 
-        ReportHandler.findFilesAndMoveToFolder(productPath, reportsFolderPath, "dependency-check-report.html");
+        ReportHandler.findFilesAndMoveToFolder(productPath, reportsFolderPath, Constant.DEPENDENCY_CHECK_REPORT);
 
-        FileOutputStream fos = new FileOutputStream(reportsFolderPath + ".zip");
-        ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(reportsFolderPath + ".zip"));
+        FileOutputStream fos = new FileOutputStream(reportsFolderPath + Constant.ZIP_FILE_EXTENSION);
+        ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(reportsFolderPath + Constant.ZIP_FILE_EXTENSION));
         File fileToZip = new File(reportsFolderPath);
 
         ReportHandler.zipFile(fileToZip, fileToZip.getName(), zipOut);
@@ -42,60 +41,55 @@ public class MainController {
 
     }
 
-    static boolean runFindSecBugs(String productPath) throws TransformerException, IOException, SAXException, ParserConfigurationException, GitAPIException, MavenInvocationException, URISyntaxException {
+    static void runFindSecBugs(String productPath) throws TransformerException, IOException, SAXException, ParserConfigurationException, GitAPIException, MavenInvocationException, URISyntaxException {
 
-        Boolean success = false;
+        //Create new files as "findbugs-security-include.xml" and "findbugs-security-exclude.xml"
+        File findBugsSecIncludeFile = new File(productPath + Constant.SLASH + Constant.FINDBUGS_SECURITY_INCLUDE);
+        File findBugsSecExcludeFile = new File(productPath + Constant.SLASH + Constant.FINDBUGS_SECURITY_EXCLUDE);
 
-        URL findBugsSecExcludeFileInputStream = MainController.class.getClassLoader().getResource("findbugs-security-exclude.xml");
-        System.out.println(findBugsSecExcludeFileInputStream);
-        File findBugsSecExcludeFile = null;
+        File productPomFile = new File(productPath + Constant.SLASH + Constant.POM_FILE);
 
-        if (findBugsSecExcludeFileInputStream != null) {
-            findBugsSecExcludeFile = new File(findBugsSecExcludeFileInputStream.toURI());
-        }
+        DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
-        URL findBugsSecIncludeFileUrl = MainController.class.getClassLoader().getResource("findbugs-security-include.xml");
-        File findBugsSecIncludeFile = null;
+        Document findBugsSecIncludeDocument = dBuilder.newDocument();
+        Document findBugsSecExcludeDocument = dBuilder.newDocument();
 
-        if (findBugsSecIncludeFileUrl != null) {
-            findBugsSecIncludeFile = new File(findBugsSecIncludeFileUrl.toURI());
-        }
+        XMLHandler.writeFindSecBugsIncludeFile(findBugsSecIncludeDocument);
+        XMLHandler.writeFindSecBugsExcludeFile(findBugsSecExcludeDocument);
 
-        if (findBugsSecExcludeFile != null && findBugsSecIncludeFile != null) {
-            FileUtils.copyFileToDirectory(findBugsSecExcludeFile, new File(productPath));
-            FileUtils.copyFileToDirectory(findBugsSecIncludeFile, new File(productPath));
+        Document findBugsPluginDocument = dBuilder.parse(productPomFile);
+        findBugsPluginDocument = XMLHandler.iterateNode(findBugsPluginDocument.getDocumentElement(), findBugsPluginDocument);
 
-            File file = new File(productPath + "/pom.xml");
+        DOMSource findBugsSecIncludeSource = new DOMSource(findBugsSecIncludeDocument);
+        DOMSource findBugsSecExcludeSource = new DOMSource(findBugsSecExcludeDocument);
+        DOMSource findBugsPluginSource = new DOMSource(findBugsPluginDocument);
 
-            DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
 
-            Document document = dBuilder.parse(file);
-            document = XMLHandler.iterateNode(document.getDocumentElement(), document);
+        StreamResult findBugsSecurityIncludeResult = new StreamResult(findBugsSecIncludeFile);
+        StreamResult findBugsSecurityExcludeResult = new StreamResult(findBugsSecExcludeFile);
 
-            DOMSource source = new DOMSource(document);
+        StreamResult result = new StreamResult(productPath + Constant.SLASH + Constant.POM_FILE);
 
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            StreamResult result = new StreamResult(productPath + "/pom.xml");
-            transformer.transform(source, result);
+        transformer.transform(findBugsSecIncludeSource, findBugsSecurityIncludeResult);
+        transformer.transform(findBugsSecExcludeSource, findBugsSecurityExcludeResult);
+        transformer.transform(findBugsPluginSource, result);
 
-            MavenClient.compile(productPath + "/pom.xml");
-            MavenClient.buildFindSecBugs(productPath + "/pom.xml");
+        MavenClient.compile(productPath + Constant.SLASH + Constant.POM_FILE);
+        MavenClient.buildFindSecBugs(productPath + Constant.SLASH + Constant.POM_FILE);
 
-            String reportsFolderPath = productPath + "/Findbugs-Reports";
+        String reportsFolderPath = productPath + Constant.SLASH + Constant.FIND_SEC_BUGS_REPORTS_FOLDER;
 
-            ReportHandler.findFilesAndMoveToFolder(productPath, reportsFolderPath, "findbugsXml.xml");
-            FileOutputStream fos = new FileOutputStream(reportsFolderPath + ".zip");
-            ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(reportsFolderPath + ".zip"));
-            File fileToZip = new File(reportsFolderPath);
+        ReportHandler.findFilesAndMoveToFolder(productPath, reportsFolderPath, Constant.FIND_BUGS_REPORT);
+        FileOutputStream fos = new FileOutputStream(reportsFolderPath + Constant.ZIP_FILE_EXTENSION);
+        ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(reportsFolderPath + Constant.ZIP_FILE_EXTENSION));
+        File fileToZip = new File(reportsFolderPath);
 
-            ReportHandler.zipFile(fileToZip, fileToZip.getName(), zipOut);
-            zipOut.close();
-            fos.close();
+        ReportHandler.zipFile(fileToZip, fileToZip.getName(), zipOut);
+        zipOut.close();
+        fos.close();
 
-            success = true;
-        }
-        return success;
     }
 
     static boolean gitClone(String url, String branch, String productPath) throws GitAPIException, IOException {
@@ -113,11 +107,5 @@ public class MainController {
         return GitClient.hasAtLeastOneReference(git.getRepository());
     }
 
-    public static void main1(String[] args) throws GitAPIException, IOException {
-        String url = "https://github.com/gabrielf/maven-samples";
-        String branch = "master";
-        String productPath = "/home/deshani/Documents/Product-old";
-        System.out.println(gitClone(url, "6.0", productPath));
-    }
 }
 

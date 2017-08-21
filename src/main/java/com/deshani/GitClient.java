@@ -23,8 +23,8 @@ class GitClient {
                 .setProgressMonitor(new TextProgressMonitor(new PrintWriter(System.out)))
                 .setURI(gitURL)
                 .setDirectory(new File(filePath))
-                .setBranchesToClone(Collections.singleton("refs/heads/" + branch))
-                .setBranch("refs/heads/" + branch)
+                .setBranchesToClone(Collections.singleton(Constant.GIT_REFS_HEADS_PATH + branch))
+                .setBranch(Constant.GIT_REFS_HEADS_PATH + branch)
                 .call();
     }
 
@@ -33,7 +33,6 @@ class GitClient {
         for (Ref ref : repo.getAllRefs().values()) {
             if (ref.getObjectId() == null)
                 continue;
-            System.out.println(ref.getObjectId());
             return true;
         }
 
