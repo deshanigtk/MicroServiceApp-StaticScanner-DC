@@ -22,12 +22,12 @@ import java.util.zip.ZipOutputStream;
 /**
  * Created by deshani on 8/8/17.
  */
-public class MainController {
+class MainController {
 
     static void runDependencyCheck(String productPath) throws IOException, GitAPIException, MavenInvocationException {
-        MavenClient.buildDependencyCheck(productPath + Constant.SLASH + Constant.POM_FILE);
+        MavenClient.buildDependencyCheck(productPath + File.separator + Constant.POM_FILE);
 
-        String reportsFolderPath = productPath + Constant.SLASH + Constant.DEPENDENCY_CHECK_REPORTS_FOLDER;
+        String reportsFolderPath = productPath + File.separator + Constant.DEPENDENCY_CHECK_REPORTS_FOLDER;
 
         ReportHandler.findFilesAndMoveToFolder(productPath, reportsFolderPath, Constant.DEPENDENCY_CHECK_REPORT);
 
@@ -44,10 +44,10 @@ public class MainController {
     static void runFindSecBugs(String productPath) throws TransformerException, IOException, SAXException, ParserConfigurationException, GitAPIException, MavenInvocationException, URISyntaxException {
 
         //Create new files as "findbugs-security-include.xml" and "findbugs-security-exclude.xml"
-        File findBugsSecIncludeFile = new File(productPath + Constant.SLASH + Constant.FINDBUGS_SECURITY_INCLUDE);
-        File findBugsSecExcludeFile = new File(productPath + Constant.SLASH + Constant.FINDBUGS_SECURITY_EXCLUDE);
+        File findBugsSecIncludeFile = new File(productPath + File.separator + Constant.FINDBUGS_SECURITY_INCLUDE);
+        File findBugsSecExcludeFile = new File(productPath + File.separator + Constant.FINDBUGS_SECURITY_EXCLUDE);
 
-        File productPomFile = new File(productPath + Constant.SLASH + Constant.POM_FILE);
+        File productPomFile = new File(productPath + File.separator + Constant.POM_FILE);
 
         DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
@@ -70,16 +70,16 @@ public class MainController {
         StreamResult findBugsSecurityIncludeResult = new StreamResult(findBugsSecIncludeFile);
         StreamResult findBugsSecurityExcludeResult = new StreamResult(findBugsSecExcludeFile);
 
-        StreamResult result = new StreamResult(productPath + Constant.SLASH + Constant.POM_FILE);
+        StreamResult result = new StreamResult(productPath + File.separator + Constant.POM_FILE);
 
         transformer.transform(findBugsSecIncludeSource, findBugsSecurityIncludeResult);
         transformer.transform(findBugsSecExcludeSource, findBugsSecurityExcludeResult);
         transformer.transform(findBugsPluginSource, result);
 
-        MavenClient.compile(productPath + Constant.SLASH + Constant.POM_FILE);
-        MavenClient.buildFindSecBugs(productPath + Constant.SLASH + Constant.POM_FILE);
+        MavenClient.compile(productPath + File.separator + Constant.POM_FILE);
+        MavenClient.buildFindSecBugs(productPath + File.separator + Constant.POM_FILE);
 
-        String reportsFolderPath = productPath + Constant.SLASH + Constant.FIND_SEC_BUGS_REPORTS_FOLDER;
+        String reportsFolderPath = productPath + File.separator + Constant.FIND_SEC_BUGS_REPORTS_FOLDER;
 
         ReportHandler.findFilesAndMoveToFolder(productPath, reportsFolderPath, Constant.FIND_BUGS_REPORT);
         FileOutputStream fos = new FileOutputStream(reportsFolderPath + Constant.ZIP_FILE_EXTENSION);
@@ -92,20 +92,28 @@ public class MainController {
 
     }
 
-    static boolean gitClone(String url, String branch, String productPath) throws GitAPIException, IOException {
+    static boolean gitClone(String url, String branch, String productPath, boolean replaceExisting) throws GitAPIException, IOException {
         Git git;
-        if (new File(productPath).exists()) {
-            git = GitClient.gitOpen(productPath);
-            if (!GitClient.hasAtLeastOneReference(git.getRepository())) {
-                FileUtils.deleteDirectory(new File(productPath));
-                git = GitClient.gitClone(url, branch, productPath);
-            }
+        if (new File(productPath).exists() && replaceExisting) {
+            FileUtils.deleteDirectory(new File(productPath));
+            git = GitClient.gitClone(url, branch, productPath);
+
+        } else if (!new File(productPath).exists()) {
+            git = GitClient.gitClone(url, branch, productPath);
 
         } else {
-            git = GitClient.gitClone(url, branch, productPath);
+            git = GitClient.gitOpen(productPath);
         }
         return GitClient.hasAtLeastOneReference(git.getRepository());
     }
 
-}
+    static void uploadProductZipFile(String fileName, String productPath, boolean replaceExisting) throws IOException {
+        if(new File(productPath).exists() && replaceExisting){
+            FileUtils.deleteDirectory(new File(productPath));
+            ReportHandler.unzip(productPath + fileName, productPath);
+        }
+        ReportHandler.unzip(productPath + fileName, productPath);
 
+    }
+
+}

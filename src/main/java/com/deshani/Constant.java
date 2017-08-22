@@ -50,7 +50,6 @@ final class Constant {
     static final String POM_FILE = "pom.xml";
 
     //Symbols
-    static final String SLASH = "/";
     static final String UNDERSCORE = "_";
     static final String NULL_STRING = "";
 
