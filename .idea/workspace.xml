@@ -5,7 +5,6 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/micro-service-app-1.0-SNAPSHOT.jar" afterPath="$PROJECT_DIR$/target/micro-service-app-1.0-SNAPSHOT.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/micro-service-app-1.0-SNAPSHOT.jar.original" afterPath="$PROJECT_DIR$/target/micro-service-app-1.0-SNAPSHOT.jar.original" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/deshani/MainController.java" afterPath="$PROJECT_DIR$/src/main/java/com/deshani/MainController.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/deshani/UserAPI.java" afterPath="$PROJECT_DIR$/src/main/java/com/deshani/UserAPI.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" afterPath="$PROJECT_DIR$/target/maven-archiver/pom.properties" />
     </list>
@@ -56,8 +55,8 @@
       <file leaf-file-name="UserAPI.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/deshani/UserAPI.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="559">
-              <caret line="77" column="1" lean-forward="true" selection-start-line="77" selection-start-column="1" selection-end-line="77" selection-end-column="1" />
+            <state relative-caret-position="451">
+              <caret line="71" column="74" lean-forward="false" selection-start-line="71" selection-start-column="74" selection-end-line="71" selection-end-column="74" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -169,8 +168,8 @@
         <option value="$PROJECT_DIR$/src/main/java/com/deshani/Constant.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/deshani/XMLHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/deshani/ReportHandler.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/deshani/UserAPI.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/deshani/MainController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/deshani/UserAPI.java" />
       </list>
     </option>
   </component>
@@ -611,7 +610,7 @@
       <workItem from="1503458654553" duration="762000" />
       <workItem from="1503472148505" duration="3615000" />
       <workItem from="1503980812377" duration="7362000" />
-      <workItem from="1504004227601" duration="327000" />
+      <workItem from="1504004227601" duration="370000" />
     </task>
     <task id="LOCAL-00001" summary="removing git comment">
       <created>1501778924100</created>
@@ -718,11 +717,18 @@
       <option name="project" value="LOCAL" />
       <updated>1503987250481</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="add method to change product path">
+      <created>1504004571546</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1504004571546</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="74439000" />
+    <option name="totallyTimeSpent" value="74482000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -823,7 +829,8 @@
     <MESSAGE value="few changes" />
     <MESSAGE value="change product dir" />
     <MESSAGE value="few" />
-    <option name="LAST_COMMIT_MESSAGE" value="few" />
+    <MESSAGE value="add method to change product path" />
+    <option name="LAST_COMMIT_MESSAGE" value="add method to change product path" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1042,6 +1049,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="378">
           <caret line="21" column="37" lean-forward="false" selection-start-line="21" selection-start-column="21" selection-end-line="21" selection-end-column="37" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1121,8 +1129,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/deshani/UserAPI.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="559">
-          <caret line="77" column="1" lean-forward="true" selection-start-line="77" selection-start-column="1" selection-end-line="77" selection-end-column="1" />
+        <state relative-caret-position="451">
+          <caret line="71" column="74" lean-forward="false" selection-start-line="71" selection-start-column="74" selection-end-line="71" selection-end-column="74" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

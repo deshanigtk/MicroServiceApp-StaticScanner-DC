@@ -69,7 +69,7 @@ public class UserAPI {
 
     @RequestMapping(value = "productPath", method = RequestMethod.GET)
     @ResponseBody
-    public boolean config(@RequestParam("productPath") String productPath) throws GitAPIException, IOException {
+    public boolean config(@RequestParam("productPath") String productPath){
         UserAPI.productPath = productPath;
         return productPath != null;
 
