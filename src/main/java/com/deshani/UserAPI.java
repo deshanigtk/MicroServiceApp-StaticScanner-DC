@@ -11,7 +11,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 
 /**
@@ -24,7 +23,7 @@ import java.net.URISyntaxException;
 @RequestMapping("staticScanner/")
 public class UserAPI {
 
-    private static String productPath = "`/opt/Product";
+    private static String productPath = "~/opt/Product";
 
     @RequestMapping(value = "dependencyCheck", method = RequestMethod.GET)
     @ResponseBody
