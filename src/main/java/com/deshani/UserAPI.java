@@ -23,7 +23,7 @@ import java.net.URISyntaxException;
 @RequestMapping("staticScanner/")
 public class UserAPI {
 
-    private static String productPath = "~/opt/Product";
+    private static String productPath;
 
     @RequestMapping(value = "dependencyCheck", method = RequestMethod.GET)
     @ResponseBody
@@ -65,6 +65,14 @@ public class UserAPI {
     public boolean uploadProductZipFile(@RequestParam("zipFile") String zipFile, @RequestParam("replaceExisting") boolean replaceExisting) throws GitAPIException, IOException {
         MainController.uploadProductZipFile(zipFile, productPath, replaceExisting);
         return new File(productPath).exists() && !new File(zipFile).exists();
+    }
+
+    @RequestMapping(value = "productPath", method = RequestMethod.GET)
+    @ResponseBody
+    public boolean config(@RequestParam("productPath") String productPath) throws GitAPIException, IOException {
+        UserAPI.productPath = productPath;
+        return productPath != null;
+
     }
 
 }

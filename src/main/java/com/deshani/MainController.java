@@ -24,6 +24,7 @@ import java.util.zip.ZipOutputStream;
  */
 class MainController {
 
+
     static void runDependencyCheck(String productPath) throws IOException, GitAPIException, MavenInvocationException {
         MavenClient.buildDependencyCheck(productPath + File.separator + Constant.POM_FILE);
 
@@ -114,5 +115,6 @@ class MainController {
         ReportHandler.extractFolder(productPath + File.separator + fileName);
 
     }
+
 
 }
