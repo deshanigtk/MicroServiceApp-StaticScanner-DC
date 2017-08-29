@@ -110,7 +110,6 @@ class MainController {
     static void uploadProductZipFile(String fileName, String productPath, boolean replaceExisting) throws IOException {
         if (new File(productPath).exists() && replaceExisting) {
             FileUtils.deleteDirectory(new File(productPath));
-            ReportHandler.extractFolder(productPath + File.separator + fileName);
         }
         ReportHandler.extractFolder(productPath + File.separator + fileName);
 

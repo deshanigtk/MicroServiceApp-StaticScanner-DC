@@ -23,7 +23,7 @@ import java.net.URISyntaxException;
 @RequestMapping("staticScanner/")
 public class UserAPI {
 
-    private static String productPath = "~/opt/Product";
+    private static String productPath = "~/opt//Product";
 
     @RequestMapping(value = "dependencyCheck", method = RequestMethod.GET)
     @ResponseBody

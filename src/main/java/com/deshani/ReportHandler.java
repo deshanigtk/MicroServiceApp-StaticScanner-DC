@@ -158,6 +158,7 @@ class ReportHandler {
             ZipEntry entry = (ZipEntry) zipFileEntries.nextElement();
             String currentEntry = entry.getName();
             File destFile = new File(newPath, currentEntry);
+
             //destFile = new File(newPath, destFile.getName());
             File destinationParent = destFile.getParentFile();
 
