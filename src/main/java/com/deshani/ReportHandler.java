@@ -61,7 +61,7 @@ class ReportHandler {
 
     }
 
-    static String extractFolder(String zipFile) throws ZipException, IOException {
+    static String extractFolder(String zipFile) throws IOException {
         int BUFFER = 2048;
         File file = new File(zipFile);
 
