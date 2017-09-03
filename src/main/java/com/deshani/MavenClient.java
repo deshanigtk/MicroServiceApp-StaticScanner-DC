@@ -18,7 +18,7 @@ class MavenClient {
         request.setGoals(Collections.singletonList(Constant.MVN_COMMAND_DEPENDENCY_CHECK));
 
         Invoker invoker = new DefaultInvoker();
-        // invoker.setMavenHome(new File(System.getenv(Constant.MVN_COMMAND_M2_HOME)));
+        invoker.setMavenHome(new File(System.getenv(Constant.MVN_COMMAND_M2_HOME)));
         InvocationResult result = invoker.execute(request);
         OptionalInt.of(result.getExitCode());
     }
