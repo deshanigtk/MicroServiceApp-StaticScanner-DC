@@ -23,14 +23,12 @@ import java.net.URISyntaxException;
 @RequestMapping("staticScanner/")
 public class UserAPI {
 
-    private static String productPath;
-
     @RequestMapping(value = "dependencyCheck", method = RequestMethod.GET)
     @ResponseBody
     public String runDependencyCheck() throws GitAPIException, MavenInvocationException, IOException {
-        if (new File(productPath).exists()) {
-            MainController.runDependencyCheck(productPath);
-            if (new File(productPath + Constant.DEPENDENCY_CHECK_REPORTS_FOLDER + Constant.ZIP_FILE_EXTENSION).exists()) {
+        if (new File(MainController.getProductPath()).exists()) {
+            MainController.runDependencyCheck();
+            if (new File(MainController.getProductPath() + Constant.DEPENDENCY_CHECK_REPORTS_FOLDER + Constant.ZIP_FILE_EXTENSION).exists()) {
                 return "Success";
             } else {
                 return "Scan Failed";
@@ -42,9 +40,9 @@ public class UserAPI {
     @RequestMapping(value = "findSecBugs", method = RequestMethod.GET)
     @ResponseBody
     public String runFindSecBugs() throws MavenInvocationException, IOException, ParserConfigurationException, SAXException, TransformerException, GitAPIException, URISyntaxException {
-        if (new File(productPath).exists()) {
-            MainController.runFindSecBugs(productPath);
-            if (new File(productPath + Constant.FIND_SEC_BUGS_REPORTS_FOLDER + Constant.ZIP_FILE_EXTENSION).exists()) {
+        if (new File(MainController.getProductPath()).exists()) {
+            MainController.runFindSecBugs();
+            if (new File(MainController.getProductPath() + Constant.FIND_SEC_BUGS_REPORTS_FOLDER + Constant.ZIP_FILE_EXTENSION).exists()) {
                 return "Success";
             } else {
                 return "Scan Failed";
@@ -56,22 +54,29 @@ public class UserAPI {
     @RequestMapping(value = "cloneProduct", method = RequestMethod.GET)
     @ResponseBody
     public boolean cloneProduct(@RequestParam("gitUrl") String url, @RequestParam("branch") String branch, @RequestParam("replaceExisting") boolean replaceExisting) throws GitAPIException, IOException {
-        return MainController.gitClone(url, branch, productPath, replaceExisting);
+        return MainController.gitClone(url, branch, replaceExisting);
 
     }
 
     @RequestMapping(value = "uploadProductZipFile", method = RequestMethod.GET)
     @ResponseBody
     public boolean uploadProductZipFile(@RequestParam("zipFile") String zipFile, @RequestParam("replaceExisting") boolean replaceExisting) throws GitAPIException, IOException {
-        MainController.uploadProductZipFile(zipFile, productPath, replaceExisting);
-        return new File(productPath).exists() && !new File(zipFile).exists();
+        MainController.uploadProductZipFile(zipFile, replaceExisting);
+        return new File(MainController.getProductPath()).exists() && !new File(zipFile).exists();
     }
 
     @RequestMapping(value = "productPath", method = RequestMethod.GET)
     @ResponseBody
-    public boolean config(@RequestParam("productPath") String productPath){
-        UserAPI.productPath = productPath;
-        return productPath != null;
+    public boolean config(@RequestParam("productPath") String productPath) {
+        MainController.setProductPath(productPath);
+        return MainController.getProductPath() != null;
+
+    }
+
+    @RequestMapping(value = "test", method = RequestMethod.GET)
+    @ResponseBody
+    public String test() {
+        return MainController.getProductPath();
 
     }
 

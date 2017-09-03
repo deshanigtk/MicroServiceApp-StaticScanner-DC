@@ -26,10 +26,10 @@ class GitClient {
                 .setBranchesToClone(Collections.singleton(Constant.GIT_REFS_HEADS_PATH + branch))
                 .setBranch(Constant.GIT_REFS_HEADS_PATH + branch)
                 .call();
+
     }
 
     static boolean hasAtLeastOneReference(Repository repo) {
-
         for (Ref ref : repo.getAllRefs().values()) {
             if (ref.getObjectId() == null)
                 continue;

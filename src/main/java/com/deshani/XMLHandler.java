@@ -8,9 +8,9 @@ import javax.xml.transform.TransformerException;
 /**
  * Created by deshani on 8/7/17.
  */
-public class XMLHandler {
+class XMLHandler {
 
-    public static Document iterateNode(Node node, Document document) throws TransformerException {
+    static Document iterateNode(Node node, Document document) throws TransformerException {
         NodeList nodeList = node.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node currentNode = nodeList.item(i);
@@ -113,15 +113,14 @@ public class XMLHandler {
 
     }
 
-    public static void writeFindSecBugsExcludeFile(Document document) throws ParserConfigurationException {
-
+    static void writeFindSecBugsExcludeFile(Document document) throws ParserConfigurationException {
         // create the root element
         Element rootEle = document.createElement(Constant.FIND_BUGS_FILTER_ELEMENT);
         document.appendChild(rootEle);
 
     }
 
-    public static void writeFindSecBugsIncludeFile(Document document) throws ParserConfigurationException {
+    static void writeFindSecBugsIncludeFile(Document document) throws ParserConfigurationException {
 
         Element rootEle = document.createElement(Constant.FIND_BUGS_FILTER_ELEMENT);
 

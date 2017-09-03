@@ -3,7 +3,6 @@ package com.deshani;
 import org.apache.maven.shared.invoker.*;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.OptionalInt;
 
@@ -13,15 +12,6 @@ import java.util.OptionalInt;
 
 class MavenClient {
 
-    static void buildPom(String pomFilePath) throws MavenInvocationException {
-        InvocationRequest request = new DefaultInvocationRequest();
-        request.setPomFile(new File(pomFilePath));
-        request.setGoals(Arrays.asList(Constant.MVN_COMMAND_BUILD_POM));
-
-        Invoker invoker = new DefaultInvoker();
-        invoker.execute(request);
-    }
-
     static void buildDependencyCheck(String pomFilePath) throws MavenInvocationException {
         InvocationRequest request = new DefaultInvocationRequest();
         request.setPomFile(new File(pomFilePath));
@@ -29,7 +19,7 @@ class MavenClient {
 
         Invoker invoker = new DefaultInvoker();
         invoker.setMavenHome(new File(System.getenv(Constant.MVN_COMMAND_M2_HOME)));
-        InvocationResult result=invoker.execute(request);
+        InvocationResult result = invoker.execute(request);
         OptionalInt.of(result.getExitCode());
     }
 

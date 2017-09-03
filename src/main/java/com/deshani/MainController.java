@@ -24,8 +24,9 @@ import java.util.zip.ZipOutputStream;
  */
 class MainController {
 
+    private static String productPath = Constant.DEFAULT_PRODUCT_PATH;
 
-    static void runDependencyCheck(String productPath) throws IOException, GitAPIException, MavenInvocationException {
+    static void runDependencyCheck() throws IOException, GitAPIException, MavenInvocationException {
         MavenClient.buildDependencyCheck(productPath + File.separator + Constant.POM_FILE);
 
         String reportsFolderPath = productPath + File.separator + Constant.DEPENDENCY_CHECK_REPORTS_FOLDER;
@@ -42,7 +43,7 @@ class MainController {
 
     }
 
-    static void runFindSecBugs(String productPath) throws TransformerException, IOException, SAXException, ParserConfigurationException, GitAPIException, MavenInvocationException, URISyntaxException {
+    static void runFindSecBugs() throws TransformerException, IOException, SAXException, ParserConfigurationException, GitAPIException, MavenInvocationException, URISyntaxException {
 
         //Create new files as "findbugs-security-include.xml" and "findbugs-security-exclude.xml"
         File findBugsSecIncludeFile = new File(productPath + File.separator + Constant.FINDBUGS_SECURITY_INCLUDE);
@@ -93,7 +94,7 @@ class MainController {
 
     }
 
-    static boolean gitClone(String url, String branch, String productPath, boolean replaceExisting) throws GitAPIException, IOException {
+    static boolean gitClone(String url, String branch, boolean replaceExisting) throws GitAPIException, IOException {
         Git git;
         if (new File(productPath).exists() && replaceExisting) {
             FileUtils.deleteDirectory(new File(productPath));
@@ -108,13 +109,23 @@ class MainController {
         return GitClient.hasAtLeastOneReference(git.getRepository());
     }
 
-    static void uploadProductZipFile(String fileName, String productPath, boolean replaceExisting) throws IOException {
+    static void uploadProductZipFile(String fileName, boolean replaceExisting) throws IOException {
         if (new File(productPath).exists() && replaceExisting) {
             FileUtils.deleteDirectory(new File(productPath));
         }
-        ReportHandler.extractFolder(productPath + File.separator + fileName);
+        String extractedFolder = ReportHandler.extractFolder(productPath + File.separator + fileName);
+        MainController.setProductPath(MainController.getProductPath() + File.separator + extractedFolder);
+        System.out.println(extractedFolder);
+        System.out.println(MainController.getProductPath());
 
     }
 
+    static void setProductPath(String productPath) {
+        MainController.productPath = productPath;
+    }
+
+    static String getProductPath() {
+        return productPath;
+    }
 
 }
