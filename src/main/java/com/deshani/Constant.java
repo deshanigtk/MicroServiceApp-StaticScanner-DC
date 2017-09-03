@@ -62,6 +62,6 @@ final class Constant {
     //Git client
     static final String GIT_REFS_HEADS_PATH = "refs/heads/";
 
-    static final String DEFAULT_PRODUCT_PATH = "/home/deshani/Documents/Product";
+    static final String DEFAULT_PRODUCT_PATH = "/home/Product";
 
 }
