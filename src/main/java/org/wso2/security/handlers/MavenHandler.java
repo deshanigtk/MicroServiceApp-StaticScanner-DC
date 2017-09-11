@@ -1,6 +1,8 @@
 package org.wso2.security.handlers;
 
 import org.apache.maven.shared.invoker.*;
+import org.wso2.security.Constants;
+
 import java.io.File;
 import java.util.Collections;
 import java.util.OptionalInt;
@@ -30,11 +32,13 @@ public class MavenHandler {
     public static void runMavenCommand(String pomFilePath, String mavenCommand) throws MavenInvocationException {
         InvocationRequest request = new DefaultInvocationRequest();
         request.setPomFile(new File(pomFilePath));
+        request.setBaseDirectory(new File(Constants.DEFAULT_PRODUCT_PATH));
         request.setGoals(Collections.singletonList(mavenCommand));
 
         Invoker invoker = new DefaultInvoker();
+        System.getProperty(MVN_COMMAND_M2_HOME);
         invoker.setMavenHome(new File(System.getenv(MVN_COMMAND_M2_HOME)));
         InvocationResult result = invoker.execute(request);
-        OptionalInt.of(result.getExitCode());
+       OptionalInt.of(result.getExitCode());
     }
 }

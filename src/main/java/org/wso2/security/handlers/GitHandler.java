@@ -1,7 +1,6 @@
 package org.wso2.security.handlers;
 
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
@@ -42,7 +41,6 @@ public class GitHandler {
                 .setBranchesToClone(Collections.singleton(GIT_REFS_HEADS_PATH + branch))
                 .setBranch(GIT_REFS_HEADS_PATH + branch)
                 .call();
-
     }
 
     public static boolean hasAtLeastOneReference(Repository repo) {
@@ -55,12 +53,12 @@ public class GitHandler {
         return false;
     }
 
-    public static void gitCheckout(String branchName, Git git) throws GitAPIException {
-        git.checkout().setName(branchName).call();
+    public static void gitCheckout(String tag, Git git) throws GitAPIException {
+        git.checkout().setName(tag).call();
     }
 
-    public static Status gitStatus(Git git) throws GitAPIException {
-        return git.status().call();
+    public static String gitDescribe(Git git) throws GitAPIException {
+        return git.describe().call();
     }
 
     public static Git gitOpen(String productPath) throws IOException {
