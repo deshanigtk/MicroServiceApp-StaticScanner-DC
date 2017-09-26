@@ -1,7 +1,7 @@
-package org.wso2.security.handlers;
+package org.wso2.security.staticscanner.handlers;
 
 import org.apache.maven.shared.invoker.*;
-import org.wso2.security.Constants;
+import org.wso2.security.staticscanner.Constants;
 
 import java.io.File;
 import java.util.Collections;
@@ -39,6 +39,6 @@ public class MavenHandler {
         System.getProperty(MVN_COMMAND_M2_HOME);
         invoker.setMavenHome(new File(System.getenv(MVN_COMMAND_M2_HOME)));
         InvocationResult result = invoker.execute(request);
-       OptionalInt.of(result.getExitCode());
+        OptionalInt.of(result.getExitCode());
     }
 }

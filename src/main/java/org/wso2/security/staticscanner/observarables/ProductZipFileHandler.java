@@ -1,4 +1,4 @@
-package org.wso2.security.observarables;/*
+package org.wso2.security.staticscanner.observarables;/*
 *  Copyright (c) ${date}, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 *  WSO2 Inc. licenses this file to you under the Apache License,
@@ -19,9 +19,9 @@ package org.wso2.security.observarables;/*
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
-import org.wso2.security.Constants;
-import org.wso2.security.StaticScannerAPI;
-import org.wso2.security.handlers.FileHandler;
+import org.wso2.security.staticscanner.Constants;
+import org.wso2.security.staticscanner.StaticScannerAPI;
+import org.wso2.security.staticscanner.handlers.FileHandler;
 
 import java.io.File;
 import java.io.IOException;

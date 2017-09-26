@@ -1,4 +1,4 @@
-package org.wso2.security.observarables;/*
+package org.wso2.security.staticscanner.observarables;/*
 *  Copyright (c) ${date}, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 *  WSO2 Inc. licenses this file to you under the Apache License,
@@ -21,7 +21,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.TextProgressMonitor;
-import org.wso2.security.Constants;
+import org.wso2.security.staticscanner.Constants;
 
 import java.io.File;
 import java.io.IOException;

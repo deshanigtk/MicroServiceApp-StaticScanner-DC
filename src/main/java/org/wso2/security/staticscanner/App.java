@@ -1,4 +1,4 @@
-package org.wso2.security;
+package org.wso2.security.staticscanner;
 
 import org.springframework.boot.SpringApplication;
 
@@ -23,7 +23,7 @@ import org.springframework.boot.SpringApplication;
 public class App {
 
     public static void main(String[] args) throws Exception {
-        SpringApplication.run(org.wso2.security.StaticScannerAPI.class, args);
+        SpringApplication.run(StaticScannerAPI.class, args);
     }
 
 }

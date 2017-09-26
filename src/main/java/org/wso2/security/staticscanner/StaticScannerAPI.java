@@ -1,16 +1,15 @@
-package org.wso2.security;
+package org.wso2.security.staticscanner;
 
 import org.apache.maven.shared.invoker.MavenInvocationException;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.wso2.security.observarables.GitHandler;
-import org.wso2.security.observarables.ProductZipFileHandler;
-import org.wso2.security.scanners.DependencyCheckScanner;
-import org.wso2.security.scanners.FindSecBugsScanner;
+import org.wso2.security.staticscanner.observarables.GitHandler;
+import org.wso2.security.staticscanner.observarables.ProductZipFileHandler;
+import org.wso2.security.staticscanner.scanners.DependencyCheckScanner;
+import org.wso2.security.staticscanner.scanners.FindSecBugsScanner;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -53,20 +52,24 @@ public class StaticScannerAPI {
     @ResponseBody
     public String runDependencyCheck() throws GitAPIException, MavenInvocationException, IOException {
         DependencyCheckScanner dependencyCheckScanner = new DependencyCheckScanner();
-        if (new File(getProductPath()).exists()) {
-            Observer dependencyCheckObserver = new Observer() {
-                @Override
-                public void update(Observable o, Object arg) {
-                    if (new File(getProductPath() + Constants.DEPENDENCY_CHECK_REPORTS_FOLDER + Constants.ZIP_FILE_EXTENSION).exists()) {
-                        returnMessage = "Success";
-                    } else {
-                        returnMessage = "Scan Failed";
+        if (new File(getProductPath()).isDirectory()) {
+            if (new File(getProductPath()).list().length > 0) {
+                Observer dependencyCheckObserver = new Observer() {
+                    @Override
+                    public void update(Observable o, Object arg) {
+                        if (new File(getProductPath() + Constants.DEPENDENCY_CHECK_REPORTS_FOLDER + Constants.ZIP_FILE_EXTENSION).exists()) {
+                            returnMessage = "Success";
+                        } else {
+                            returnMessage = "Scan Failed";
+                        }
                     }
-                }
-            };
-            dependencyCheckScanner.addObserver(dependencyCheckObserver);
-            new Thread(dependencyCheckScanner).start();
-            return returnMessage;
+
+                };
+
+                dependencyCheckScanner.addObserver(dependencyCheckObserver);
+                new Thread(dependencyCheckScanner).start();
+                return returnMessage;
+            }
         }
         return "Product Not Found";
     }
@@ -110,7 +113,7 @@ public class StaticScannerAPI {
         return gitStatus;
     }
 
-    @RequestMapping(value = "uploadProductZipFileANdExtract", method = RequestMethod.GET)
+    @RequestMapping(value = "uploadProductZipFileANdExtract", method = RequestMethod.POST)
     @ResponseBody
     public boolean uploadProductZipFileAndExtract(@RequestParam MultipartFile file) throws IOException {
         ProductZipFileHandler productZipFileHandler = new ProductZipFileHandler(file);
@@ -118,8 +121,11 @@ public class StaticScannerAPI {
         Observer productUploaderObserver = new Observer() {
             @Override
             public void update(Observable o, Object arg) {
+                boolean uploadedStatus;
                 if (new File(getProductPath()).exists()) {
                     uploadStatus = true;
+                } else {
+                    uploadStatus = false;
                 }
             }
         };

@@ -1,9 +1,10 @@
-package org.wso2.security.scanners;
+package org.wso2.security.staticscanner.scanners;
 
 import org.apache.maven.shared.invoker.MavenInvocationException;
-import org.wso2.security.Constants;
-import org.wso2.security.handlers.FileHandler;
-import org.wso2.security.handlers.MavenHandler;
+import org.wso2.security.staticscanner.Constants;
+import org.wso2.security.staticscanner.StaticScannerAPI;
+import org.wso2.security.staticscanner.handlers.FileHandler;
+import org.wso2.security.staticscanner.handlers.MavenHandler;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -47,10 +48,10 @@ public class DependencyCheckScanner extends Observable implements Runnable {
     }
 
     private void startScan() throws IOException, MavenInvocationException {
-        MavenHandler.runMavenCommand(Constants.DEFAULT_PRODUCT_PATH + File.separator + Constants.POM_FILE, MVN_COMMAND_DEPENDENCY_CHECK);
+        MavenHandler.runMavenCommand(StaticScannerAPI.getProductPath() + File.separator + Constants.POM_FILE, MVN_COMMAND_DEPENDENCY_CHECK);
 
-        String reportsFolderPath = Constants.DEFAULT_PRODUCT_PATH + File.separator + Constants.DEPENDENCY_CHECK_REPORTS_FOLDER;
-        FileHandler.findFilesAndMoveToFolder(Constants.DEFAULT_PRODUCT_PATH, reportsFolderPath, Constants.DEPENDENCY_CHECK_REPORT);
+        String reportsFolderPath = StaticScannerAPI.getProductPath() + File.separator + Constants.DEPENDENCY_CHECK_REPORTS_FOLDER;
+        FileHandler.findFilesAndMoveToFolder(StaticScannerAPI.getProductPath(), reportsFolderPath, Constants.DEPENDENCY_CHECK_REPORT);
 
         FileOutputStream fos = new FileOutputStream(reportsFolderPath + Constants.ZIP_FILE_EXTENSION);
         ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(reportsFolderPath + Constants.ZIP_FILE_EXTENSION));

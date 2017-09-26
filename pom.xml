@@ -38,7 +38,7 @@
         <artifactId>spring-boot-maven-plugin</artifactId>
         <configuration>
           <fork>true</fork>
-          <mainClass>org.wso2.security.App</mainClass>
+          <mainClass>org.wso2.security.staticscanner.App</mainClass>
         </configuration>
         <executions>
           <execution>

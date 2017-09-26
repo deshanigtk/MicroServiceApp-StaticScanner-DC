@@ -1,4 +1,4 @@
-package org.wso2.security;
+package org.wso2.security.staticscanner;
 
 /*
 *  Copyright (c) ${date}, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
@@ -34,6 +34,6 @@ public final class Constants {
     public static final String UNDERSCORE = "_";
     public static final String NULL_STRING = "";
 
-    public static final String DEFAULT_PRODUCT_PATH = "/home/deshani/Documents/Product1";
+    public static final String DEFAULT_PRODUCT_PATH = "/home/deshani/Documents/Product3";
 
 }
