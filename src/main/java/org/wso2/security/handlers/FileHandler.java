@@ -2,6 +2,9 @@ package org.wso2.security.handlers;
 
 
 import org.codehaus.plexus.util.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MultipartFile;
 import org.wso2.security.Constants;
 
 import java.io.*;
@@ -28,6 +31,9 @@ import java.util.zip.*;
 * under the License.
 */
 public class FileHandler {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(FileHandler.class);
+
 
     public static void findFilesAndMoveToFolder(String sourcePath, String destinationPath, String fileName) throws IOException {
         File dir = new File(destinationPath);
@@ -128,4 +134,30 @@ public class FileHandler {
         return fileName.substring(0, fileName.length() - 4);
     }
 
+    public static String uploadFile(MultipartFile file) {
+        if (!file.isEmpty()) {
+            String fileName = file.getOriginalFilename();
+            if (fileName.endsWith(".zip")) {
+                try {
+                    byte[] bytes = file.getBytes();
+                    BufferedOutputStream stream =
+                            new BufferedOutputStream(new FileOutputStream(new File(Constants.DEFAULT_PRODUCT_PATH + File.separator + fileName)));
+                    stream.write(bytes);
+                    stream.close();
+                    LOGGER.info("File successfully uploaded");
+                    return fileName;
+
+                } catch (IOException e) {
+                    LOGGER.error("File is not uploaded" + e.toString());
+                }
+
+            } else {
+                LOGGER.error("Not a zip file");
+            }
+        } else {
+            System.out.println("file empty: " + file.isEmpty());
+            LOGGER.error("No file");
+        }
+        return null;
+    }
 }

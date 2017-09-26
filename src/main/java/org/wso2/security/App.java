@@ -23,7 +23,7 @@ import org.springframework.boot.SpringApplication;
 public class App {
 
     public static void main(String[] args) throws Exception {
-        SpringApplication.run(UserAPI.class, args);
+        SpringApplication.run(org.wso2.security.StaticScannerAPI.class, args);
     }
 
 }

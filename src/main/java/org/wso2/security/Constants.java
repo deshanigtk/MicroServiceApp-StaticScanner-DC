@@ -34,6 +34,6 @@ public final class Constants {
     public static final String UNDERSCORE = "_";
     public static final String NULL_STRING = "";
 
-    public static final String DEFAULT_PRODUCT_PATH = "/home/Product";
+    public static final String DEFAULT_PRODUCT_PATH = "/home/deshani/Documents/Product1";
 
 }
