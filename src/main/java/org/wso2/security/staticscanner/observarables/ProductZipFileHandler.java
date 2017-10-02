@@ -20,11 +20,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 import org.wso2.security.staticscanner.Constants;
-import org.wso2.security.staticscanner.StaticScannerAPI;
+import org.wso2.security.staticscanner.NotificationManager;
 import org.wso2.security.staticscanner.handlers.FileHandler;
+import org.wso2.security.staticscanner.StaticScannerService;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Observable;
 
 public class ProductZipFileHandler extends Observable implements Runnable {
@@ -47,22 +50,23 @@ public class ProductZipFileHandler extends Observable implements Runnable {
         }
     }
 
-    private void uploadProductZipAndExtract() throws IOException {
+    private boolean uploadProductZipAndExtract() throws IOException {
         boolean isProductPathCreated = new File(Constants.DEFAULT_PRODUCT_PATH).exists() || new File(Constants.DEFAULT_PRODUCT_PATH).mkdir();
         String fileName = null;
         String folderName = null;
 
         if (isProductPathCreated) {
             fileName = FileHandler.uploadFile(file);
-
         }
-
         if (fileName != null) {
+            String time = new SimpleDateFormat("yyyy-MM-dd:HH.mm.ss").format(new Date());
+            NotificationManager.notifyFileUploaded(true, time);
             folderName = FileHandler.extractFolder(Constants.DEFAULT_PRODUCT_PATH + File.separator + fileName);
         }
-
         if (folderName != null) {
-            StaticScannerAPI.setProductPath(StaticScannerAPI.getProductPath() + File.separator + folderName);
+            StaticScannerService.setProductPath(StaticScannerService.getProductPath() + File.separator + folderName);
+            return true;
         }
+        return false;
     }
 }

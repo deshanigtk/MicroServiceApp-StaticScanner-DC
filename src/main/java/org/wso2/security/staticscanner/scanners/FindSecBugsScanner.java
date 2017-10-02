@@ -3,10 +3,10 @@ package org.wso2.security.staticscanner.scanners;
 import org.apache.maven.shared.invoker.MavenInvocationException;
 import org.w3c.dom.Document;
 import org.wso2.security.staticscanner.Constants;
-import org.wso2.security.staticscanner.StaticScannerAPI;
 import org.wso2.security.staticscanner.handlers.FileHandler;
 import org.wso2.security.staticscanner.handlers.MavenHandler;
 import org.wso2.security.staticscanner.handlers.XMLHandler;
+import org.wso2.security.staticscanner.StaticScannerService;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -65,10 +65,10 @@ public class FindSecBugsScanner extends Observable implements Runnable {
     private void startScan() throws ParserConfigurationException, TransformerException, IOException, SAXException, MavenInvocationException {
 
         //Create new files as "findbugs-security-include.xml" and "findbugs-security-exclude.xml"
-        File findBugsSecIncludeFile = new File(StaticScannerAPI.getProductPath() + File.separator + FINDBUGS_SECURITY_INCLUDE);
-        File findBugsSecExcludeFile = new File(StaticScannerAPI.getProductPath() + File.separator + FINDBUGS_SECURITY_EXCLUDE);
+        File findBugsSecIncludeFile = new File(StaticScannerService.getProductPath() + File.separator + FINDBUGS_SECURITY_INCLUDE);
+        File findBugsSecExcludeFile = new File(StaticScannerService.getProductPath() + File.separator + FINDBUGS_SECURITY_EXCLUDE);
 
-        File productPomFile = new File(StaticScannerAPI.getProductPath() + File.separator + Constants.POM_FILE);
+        File productPomFile = new File(StaticScannerService.getProductPath() + File.separator + Constants.POM_FILE);
 
         DocumentBuilder dBuilder;
         dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -93,16 +93,16 @@ public class FindSecBugsScanner extends Observable implements Runnable {
 
         StreamResult findBugsSecurityIncludeResult = new StreamResult(findBugsSecIncludeFile);
         StreamResult findBugsSecurityExcludeResult = new StreamResult(findBugsSecExcludeFile);
-        StreamResult result = new StreamResult(StaticScannerAPI.getProductPath() + File.separator + Constants.POM_FILE);
+        StreamResult result = new StreamResult(StaticScannerService.getProductPath() + File.separator + Constants.POM_FILE);
 
         transformer.transform(findBugsSecIncludeSource, findBugsSecurityIncludeResult);
         transformer.transform(findBugsSecExcludeSource, findBugsSecurityExcludeResult);
         transformer.transform(findBugsPluginSource, result);
-        MavenHandler.runMavenCommand(StaticScannerAPI.getProductPath() + File.separator + Constants.POM_FILE, MVN_COMMAND_COMPILE);
-        MavenHandler.runMavenCommand(StaticScannerAPI.getProductPath() + File.separator + Constants.POM_FILE, MVN_COMMAND_FIND_SEC_BUGS);
+        MavenHandler.runMavenCommand(StaticScannerService.getProductPath() + File.separator + Constants.POM_FILE, MVN_COMMAND_COMPILE);
+        MavenHandler.runMavenCommand(StaticScannerService.getProductPath() + File.separator + Constants.POM_FILE, MVN_COMMAND_FIND_SEC_BUGS);
 
-        String reportsFolderPath = StaticScannerAPI.getProductPath() + File.separator + Constants.FIND_SEC_BUGS_REPORTS_FOLDER;
-        FileHandler.findFilesAndMoveToFolder(StaticScannerAPI.getProductPath(), reportsFolderPath, FIND_BUGS_REPORT);
+        String reportsFolderPath = StaticScannerService.getProductPath() + File.separator + Constants.FIND_SEC_BUGS_REPORTS_FOLDER;
+        FileHandler.findFilesAndMoveToFolder(StaticScannerService.getProductPath(), reportsFolderPath, FIND_BUGS_REPORT);
 
         FileOutputStream fos = new FileOutputStream(reportsFolderPath + Constants.ZIP_FILE_EXTENSION);
         ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(reportsFolderPath + Constants.ZIP_FILE_EXTENSION));
