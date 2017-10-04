@@ -26,8 +26,6 @@ import org.wso2.security.staticscanner.StaticScannerService;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Observable;
 
 public class ProductZipFileHandler extends Observable implements Runnable {
@@ -42,11 +40,13 @@ public class ProductZipFileHandler extends Observable implements Runnable {
     @Override
     public void run() {
         try {
-            uploadProductZipAndExtract();
+            boolean isProductUploadedAndExtracted = uploadProductZipAndExtract();
+            LOGGER.info("Product upload and extract status: " + isProductUploadedAndExtracted);
             setChanged();
             notifyObservers(true);
         } catch (IOException e) {
             e.printStackTrace();
+            LOGGER.error(e.toString());
         }
     }
 
@@ -59,12 +59,11 @@ public class ProductZipFileHandler extends Observable implements Runnable {
             fileName = FileHandler.uploadFile(file);
         }
         if (fileName != null) {
-            String time = new SimpleDateFormat("yyyy-MM-dd:HH.mm.ss").format(new Date());
-            NotificationManager.notifyFileUploaded(true, time);
             folderName = FileHandler.extractFolder(Constants.DEFAULT_PRODUCT_PATH + File.separator + fileName);
         }
         if (folderName != null) {
-            StaticScannerService.setProductPath(StaticScannerService.getProductPath() + File.separator + folderName);
+            StaticScannerService.setProductPath(Constants.DEFAULT_PRODUCT_PATH + File.separator + folderName);
+            LOGGER.info("New product path: " + StaticScannerService.getProductPath());
             return true;
         }
         return false;

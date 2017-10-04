@@ -7,13 +7,9 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.xml.sax.SAXException;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 /*
 *  Copyright (c) ${date}, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
@@ -32,7 +28,6 @@ import java.net.URISyntaxException;
 * specific language governing permissions and limitations
 * under the License.
 */
-
 @Controller
 @EnableAutoConfiguration
 @RequestMapping("staticScanner")
@@ -40,8 +35,20 @@ public class StaticScannerAPI {
 
     @RequestMapping(value = "configureNotificationManager", method = RequestMethod.GET)
     @ResponseBody
-    public boolean configureNotificationManager(@RequestParam String automationManagerHost, @RequestParam int automationManagerPort, @RequestParam String myContainerId) throws IOException {
+    public boolean configureNotificationManager(@RequestParam String automationManagerHost, @RequestParam int automationManagerPort, @RequestParam String myContainerId) {
         return StaticScannerService.configureNotificationManager(automationManagerHost, automationManagerPort, myContainerId);
+    }
+
+    @RequestMapping(value = "cloneProductFromGitHub", method = RequestMethod.GET)
+    @ResponseBody
+    public String cloneProductFromGitHub(@RequestParam String url, @RequestParam String branch, @RequestParam String tag) {
+        return StaticScannerService.cloneProductFromGitHub(url, branch, tag);
+    }
+
+    @RequestMapping(value = "uploadProductZipFileAndExtract", method = RequestMethod.POST)
+    @ResponseBody
+    public String uploadProductZipFileAndExtract(@RequestParam MultipartFile file) {
+        return StaticScannerService.uploadProductZipFileAndExtract(file);
     }
 
     @RequestMapping(value = "runDependencyCheck", method = RequestMethod.GET)
@@ -52,26 +59,14 @@ public class StaticScannerAPI {
 
     @RequestMapping(value = "runFindSecBugs", method = RequestMethod.GET)
     @ResponseBody
-    public String runFindSecBugs() throws MavenInvocationException, IOException, ParserConfigurationException, SAXException, TransformerException, GitAPIException, URISyntaxException {
+    public String runFindSecBugs() {
         return StaticScannerService.runFindSecBugs();
-    }
-
-    @RequestMapping(value = "cloneProductFromGitHub", method = RequestMethod.GET)
-    @ResponseBody
-    public String cloneProductFromGitHub(@RequestParam String url, @RequestParam String branch, @RequestParam String tag) throws GitAPIException, IOException {
-        return StaticScannerService.cloneProductFromGitHub(url, branch, tag);
-    }
-
-    @RequestMapping(value = "uploadProductZipFileAndExtract", method = RequestMethod.POST)
-    @ResponseBody
-    public String uploadProductZipFileAndExtract(@RequestParam MultipartFile file) throws IOException {
-        return StaticScannerService.uploadProductZipFileAndExtract(file);
     }
 
     @RequestMapping(value = "getReport", method = RequestMethod.GET, produces = "application/octet-stream")
     @ResponseBody
-    public HttpResponse getReport(HttpServletResponse response, @RequestParam boolean dependencyCheckreports) {
-        return StaticScannerService.getReport(response, dependencyCheckreports);
+    public HttpResponse getReport(HttpServletResponse response, @RequestParam boolean dependencyCheckReport) {
+        return StaticScannerService.getReport(response, dependencyCheckReport);
     }
 }
 

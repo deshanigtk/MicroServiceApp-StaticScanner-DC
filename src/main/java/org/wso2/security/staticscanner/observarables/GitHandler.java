@@ -21,7 +21,10 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.TextProgressMonitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wso2.security.staticscanner.Constants;
+import org.wso2.security.staticscanner.NotificationManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +40,8 @@ public class GitHandler extends Observable implements Runnable {
     private String tag;
     private final String GIT_REFS_HEADS_PATH = "refs/heads/";
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(GitHandler.class);
+
 
     public GitHandler(String url, String branch, String tag) {
         this.url = url;
@@ -47,11 +52,13 @@ public class GitHandler extends Observable implements Runnable {
     @Override
     public void run() {
         try {
-            startClone(url, branch, tag);
+            boolean isCloned = startClone(url, branch, tag);
+            LOGGER.info("Clone status: " + isCloned);
             setChanged();
             notifyObservers(true);
         } catch (IOException | GitAPIException e) {
             e.printStackTrace();
+            LOGGER.error(e.toString());
         }
     }
 
@@ -70,7 +77,6 @@ public class GitHandler extends Observable implements Runnable {
 
             }
         }
-
         return hasAtLeastOneReference(git.getRepository());
     }
 

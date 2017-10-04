@@ -17,13 +17,9 @@ package org.wso2.security.staticscanner;/*
 */
 
 import org.apache.http.HttpResponse;
-import org.apache.maven.shared.invoker.MavenInvocationException;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.eclipse.jgit.api.errors.GitAPIException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,16 +28,9 @@ import org.wso2.security.staticscanner.observarables.GitHandler;
 import org.wso2.security.staticscanner.observarables.ProductZipFileHandler;
 import org.wso2.security.staticscanner.scanners.DependencyCheckScanner;
 import org.wso2.security.staticscanner.scanners.FindSecBugsScanner;
-import org.xml.sax.SAXException;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Observable;
@@ -63,132 +52,155 @@ public class StaticScannerService {
         return NotificationManager.isConfigured();
     }
 
-    public static String runFindSecBugs() throws MavenInvocationException, IOException, ParserConfigurationException, SAXException, TransformerException, GitAPIException, URISyntaxException {
-        if (new File(getProductPath()).isDirectory()) {
-            if (new File(getProductPath()).list().length > 0) {
-                Observer findSecBugsObserver = new Observer() {
-                    @Override
-                    public void update(Observable o, Object arg) {
-                        if (new File(getProductPath() + Constants.FIND_SEC_BUGS_REPORTS_FOLDER + Constants.ZIP_FILE_EXTENSION).exists()) {
-                            LOGGER.info("FindSecBugs scanning completed");
-                            String time = new SimpleDateFormat("yyyy-MM-dd:HH.mm.ss").format(new Date());
-                            NotificationManager.notifyFindSecBugsReportReady(true, time);
+    public static String cloneProductFromGitHub(@RequestParam String url, @RequestParam String branch, @RequestParam String tag) {
+        if (NotificationManager.isConfigured()) {
+            Observer gitHandlerObserver = new Observer() {
+                @Override
+                public void update(Observable o, Object arg) {
+                    if (new File(getProductPath()).isDirectory()) {
+                        if (new File(getProductPath()).list().length > 0) {
+                            isProductAvailable = true;
+                            LOGGER.info("Product cloned successfully");
+                            NotificationManager.notifyProductCloned(true, new SimpleDateFormat("yyyy-MM-dd:HH.mm.ss").format(new Date()));
                         } else {
-                            LOGGER.error("Unable to complete FindSecBugs scanning");
+                            LOGGER.error("Unable to clone product");
                         }
-                    }
-                };
-                FindSecBugsScanner findSecBugsScanner = new FindSecBugsScanner();
-                findSecBugsScanner.addObserver(findSecBugsObserver);
-                new Thread(findSecBugsScanner).start();
-                return "Ok";
-            }
-        }
-        String message = "Product not available";
-        LOGGER.error(message);
-        return message;
-    }
-
-    public static String runDependencyCheck() throws GitAPIException, MavenInvocationException, IOException {
-
-        if (new File(getProductPath()).isDirectory()) {
-            if (new File(getProductPath()).list().length > 0) {
-                DependencyCheckScanner dependencyCheckScanner = new DependencyCheckScanner();
-
-                Observer dependencyCheckObserver = new Observer() {
-                    @Override
-                    public void update(Observable o, Object arg) {
-                        if (new File(getProductPath() + Constants.DEPENDENCY_CHECK_REPORTS_FOLDER + Constants.ZIP_FILE_EXTENSION).exists()) {
-                            LOGGER.info("Successfully completed Dependency Check Scan");
-                            String time = new SimpleDateFormat("yyyy-MM-dd:HH.mm.ss").format(new Date());
-                            NotificationManager.notifyDependencyCheckReportReady(true, time);
-                        } else {
-                            LOGGER.error("Dependency Check scan failed");
-                        }
-                    }
-
-                };
-
-                dependencyCheckScanner.addObserver(dependencyCheckObserver);
-                new Thread(dependencyCheckScanner).start();
-                return "Ok";
-            }
-        }
-        String message = "Product not available";
-        LOGGER.error(message);
-        return message;
-    }
-
-
-    public static String uploadProductZipFileAndExtract(@RequestParam MultipartFile file) throws IOException {
-        ProductZipFileHandler productZipFileHandler = new ProductZipFileHandler(file);
-
-        Observer productUploaderObserver = new Observer() {
-            @Override
-            public void update(Observable o, Object arg) {
-                if (new File(getProductPath()).isDirectory()) {
-                    if (new File(getProductPath()).list().length > 0) {
-                        isProductAvailable = true;
-                        String time = new SimpleDateFormat("yyyy-MM-dd:HH.mm.ss").format(new Date());
-                        NotificationManager.notifyFileExtracted(true, time);
-                        LOGGER.info("Product is successfully uploaded");
                     }
                 }
+            };
+            if (!isProductAvailable) {
+                GitHandler gitHandler = new GitHandler(url, branch, tag);
+                gitHandler.addObserver(gitHandlerObserver);
+                new Thread(gitHandler).start();
+                return "Ok";
+            } else {
+                String message = "Product is already available";
+                LOGGER.error(message);
+                return message;
             }
-        };
-        if (!isProductAvailable) {
-            productZipFileHandler.addObserver(productUploaderObserver);
-            new Thread(productZipFileHandler).start();
-            return "Ok";
         } else {
-            String message = "Product is already available";
+            String message = "Please configure notification manager";
             LOGGER.error(message);
             return message;
         }
     }
 
-    public static String cloneProductFromGitHub(@RequestParam String url, @RequestParam String branch, @RequestParam String tag) throws GitAPIException, IOException {
-        GitHandler gitHandler = new GitHandler(url, branch, tag);
-        Observer gitHandlerObserver = new Observer() {
-            @Override
-            public void update(Observable o, Object arg) {
-                if (new File(getProductPath()).isDirectory()) {
-                    if (new File(getProductPath()).list().length > 0) {
-                        isProductAvailable = true;
-                        LOGGER.info("Product cloned successfully");
-                        String time = new SimpleDateFormat("yyyy-MM-dd:HH.mm.ss").format(new Date());
-                        NotificationManager.notifyProductCloned(true, time);
-                    } else {
-                        LOGGER.error("Unable to clone product");
+    public static String uploadProductZipFileAndExtract(@RequestParam MultipartFile file) {
+        if (NotificationManager.isConfigured()) {
+            Observer productUploaderObserver = new Observer() {
+                @Override
+                public void update(Observable o, Object arg) {
+                    if (new File(getProductPath()).isDirectory()) {
+                        if (new File(getProductPath()).list().length > 0) {
+                            isProductAvailable = true;
+                            NotificationManager.notifyFileExtracted(true, new SimpleDateFormat("yyyy-MM-dd:HH.mm.ss").format(new Date()));
+                            LOGGER.info("Product is successfully uploaded");
+                        }
                     }
                 }
+            };
+            if (!isProductAvailable) {
+                ProductZipFileHandler productZipFileHandler = new ProductZipFileHandler(file);
+                productZipFileHandler.addObserver(productUploaderObserver);
+                new Thread(productZipFileHandler).start();
+                return "Ok";
+            } else {
+                String message = "Product is already available";
+                LOGGER.error(message);
+                return message;
             }
-        };
-        if (!isProductAvailable) {
-            gitHandler.addObserver(gitHandlerObserver);
-            new Thread(gitHandler).start();
-            return "Ok";
         } else {
-            String message = "Product is already available";
+            String message = "Please configure notification manager";
             LOGGER.error(message);
             return message;
         }
     }
+
+
+    public static String runFindSecBugs() {
+        if (NotificationManager.isConfigured()) {
+            if (new File(getProductPath()).isDirectory()) {
+                if (new File(getProductPath()).list().length > 0) {
+                    Observer findSecBugsObserver = new Observer() {
+                        @Override
+                        public void update(Observable o, Object arg) {
+                            if (new File(getProductPath() + File.separator + Constants.FIND_SEC_BUGS_REPORTS_FOLDER + Constants.ZIP_FILE_EXTENSION).exists()) {
+                                LOGGER.info("FindSecBugs scanning completed");
+                                String time = new SimpleDateFormat("yyyy-MM-dd:HH.mm.ss").format(new Date());
+                                NotificationManager.notifyFindSecBugsReportReady(true, time);
+                            } else {
+                                LOGGER.error("Unable to complete FindSecBugs scanning");
+                            }
+                        }
+                    };
+                    FindSecBugsScanner findSecBugsScanner = new FindSecBugsScanner();
+                    findSecBugsScanner.addObserver(findSecBugsObserver);
+                    new Thread(findSecBugsScanner).start();
+                    return "Ok";
+                }
+            }
+            String message = "Product not available";
+            LOGGER.error(message);
+            return message;
+        } else {
+            String message = "Please configure notification manager";
+            LOGGER.error(message);
+            return message;
+        }
+    }
+
+    public static String runDependencyCheck() {
+        if (NotificationManager.isConfigured()) {
+            if (new File(getProductPath()).isDirectory()) {
+                if (new File(getProductPath()).list().length > 0) {
+                    DependencyCheckScanner dependencyCheckScanner = new DependencyCheckScanner();
+
+                    Observer dependencyCheckObserver = new Observer() {
+                        @Override
+                        public void update(Observable o, Object arg) {
+                            if (new File(getProductPath() + File.separator + Constants.DEPENDENCY_CHECK_REPORTS_FOLDER + Constants.ZIP_FILE_EXTENSION).exists()) {
+                                LOGGER.info("Successfully completed Dependency Check Scan");
+                                String time = new SimpleDateFormat("yyyy-MM-dd:HH.mm.ss").format(new Date());
+                                NotificationManager.notifyDependencyCheckReportReady(true, time);
+                            } else {
+                                LOGGER.error("Dependency Check scan failed");
+                            }
+                        }
+
+                    };
+
+                    dependencyCheckScanner.addObserver(dependencyCheckObserver);
+                    new Thread(dependencyCheckScanner).start();
+                    return "Ok";
+                }
+            }
+            String message = "Product not available";
+            LOGGER.error(message);
+            return message;
+        } else {
+            String message = "Please configure notification manager";
+            LOGGER.error(message);
+            return message;
+        }
+    }
+
 
     public static HttpResponse getReport(HttpServletResponse response, boolean dependencyCheckReport) {
         String reportsPath;
         if (dependencyCheckReport) {
-            reportsPath = getProductPath() + File.separator + Constants.DEPENDENCY_CHECK_REPORTS_FOLDER;
+            reportsPath = getProductPath() + File.separator + Constants.DEPENDENCY_CHECK_REPORTS_FOLDER + Constants.ZIP_FILE_EXTENSION;
         } else {
-            reportsPath = getProductPath() + File.separator + Constants.FIND_SEC_BUGS_REPORTS_FOLDER;
+            reportsPath = getProductPath() + File.separator + Constants.FIND_SEC_BUGS_REPORTS_FOLDER + Constants.ZIP_FILE_EXTENSION;
         }
         if (new File(reportsPath).exists()) {
             try {
                 InputStream inputStream = new FileInputStream(reportsPath);
                 IOUtils.copy(inputStream, response.getOutputStream());
                 response.flushBuffer();
-                LOGGER.info("Successfully write to output stream");
+                LOGGER.info("Successfully written to output stream");
+
                 return (HttpResponse) response;
+
             } catch (IOException e) {
                 e.printStackTrace();
                 LOGGER.error(e.toString());
