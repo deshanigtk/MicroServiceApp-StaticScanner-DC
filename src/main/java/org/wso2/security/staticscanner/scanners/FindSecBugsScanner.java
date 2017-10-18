@@ -20,7 +20,6 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Observable;
 import java.util.zip.ZipOutputStream;
 
 /*
@@ -41,7 +40,7 @@ import java.util.zip.ZipOutputStream;
 * under the License.
 */
 
-public class FindSecBugsScanner extends Observable implements Runnable {
+public class FindSecBugsScanner implements Runnable {
     //FindSecBugs related
     private static final String FIND_BUGS_REPORT = "findbugsXml.xml";
     private static final String FINDBUGS_SECURITY_INCLUDE = "findbugs-security-include.xml";
@@ -55,8 +54,6 @@ public class FindSecBugsScanner extends Observable implements Runnable {
     public void run() {
         try {
             startScan();
-            setChanged();
-            notifyObservers(true);
         } catch (ParserConfigurationException | TransformerException | IOException | SAXException | MavenInvocationException e) {
             e.printStackTrace();
         }
@@ -65,10 +62,10 @@ public class FindSecBugsScanner extends Observable implements Runnable {
     private void startScan() throws ParserConfigurationException, TransformerException, IOException, SAXException, MavenInvocationException {
 
         //Create new files as "findbugs-security-include.xml" and "findbugs-security-exclude.xml"
-        File findBugsSecIncludeFile = new File(StaticScannerService.getProductPath() + File.separator + FINDBUGS_SECURITY_INCLUDE);
-        File findBugsSecExcludeFile = new File(StaticScannerService.getProductPath() + File.separator + FINDBUGS_SECURITY_EXCLUDE);
+        File findBugsSecIncludeFile = new File(MainScanner.getProductPath() + File.separator + FINDBUGS_SECURITY_INCLUDE);
+        File findBugsSecExcludeFile = new File(MainScanner.getProductPath() + File.separator + FINDBUGS_SECURITY_EXCLUDE);
 
-        File productPomFile = new File(StaticScannerService.getProductPath() + File.separator + Constants.POM_FILE);
+        File productPomFile = new File(MainScanner.getProductPath() + File.separator + Constants.POM_FILE);
 
         DocumentBuilder dBuilder;
         dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -93,16 +90,16 @@ public class FindSecBugsScanner extends Observable implements Runnable {
 
         StreamResult findBugsSecurityIncludeResult = new StreamResult(findBugsSecIncludeFile);
         StreamResult findBugsSecurityExcludeResult = new StreamResult(findBugsSecExcludeFile);
-        StreamResult result = new StreamResult(StaticScannerService.getProductPath() + File.separator + Constants.POM_FILE);
+        StreamResult result = new StreamResult(MainScanner.getProductPath() + File.separator + Constants.POM_FILE);
 
         transformer.transform(findBugsSecIncludeSource, findBugsSecurityIncludeResult);
         transformer.transform(findBugsSecExcludeSource, findBugsSecurityExcludeResult);
         transformer.transform(findBugsPluginSource, result);
-        MavenHandler.runMavenCommand(StaticScannerService.getProductPath() + File.separator + Constants.POM_FILE, MVN_COMMAND_COMPILE);
-        MavenHandler.runMavenCommand(StaticScannerService.getProductPath() + File.separator + Constants.POM_FILE, MVN_COMMAND_FIND_SEC_BUGS);
+        MavenHandler.runMavenCommand(MainScanner.getProductPath() + File.separator + Constants.POM_FILE, MVN_COMMAND_COMPILE);
+        MavenHandler.runMavenCommand(MainScanner.getProductPath() + File.separator + Constants.POM_FILE, MVN_COMMAND_FIND_SEC_BUGS);
 
-        String reportsFolderPath = StaticScannerService.getProductPath() + File.separator + Constants.FIND_SEC_BUGS_REPORTS_FOLDER;
-        FileHandler.findFilesAndMoveToFolder(StaticScannerService.getProductPath(), reportsFolderPath, FIND_BUGS_REPORT);
+        String reportsFolderPath = MainScanner.getProductPath() + File.separator + Constants.FIND_SEC_BUGS_REPORTS_FOLDER;
+        FileHandler.findFilesAndMoveToFolder(MainScanner.getProductPath(), reportsFolderPath, FIND_BUGS_REPORT);
 
         FileOutputStream fos = new FileOutputStream(reportsFolderPath + Constants.ZIP_FILE_EXTENSION);
         ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(reportsFolderPath + Constants.ZIP_FILE_EXTENSION));

@@ -1,6 +1,7 @@
 package org.wso2.security.staticscanner;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /*
 *  Copyright (c) ${date}, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
@@ -20,10 +21,11 @@ import org.springframework.boot.SpringApplication;
 * under the License.
 */
 
+@SpringBootApplication
 public class App {
 
     public static void main(String[] args) throws Exception {
-        SpringApplication.run(StaticScannerAPI.class, args);
+        SpringApplication.run(App.class, args);
     }
 
 }

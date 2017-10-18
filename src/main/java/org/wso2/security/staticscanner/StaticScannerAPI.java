@@ -1,15 +1,12 @@
 package org.wso2.security.staticscanner;
 
 import org.apache.http.HttpResponse;
-import org.apache.maven.shared.invoker.MavenInvocationException;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /*
 *  Copyright (c) ${date}, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
@@ -29,44 +26,42 @@ import java.io.IOException;
 * under the License.
 */
 @Controller
-@EnableAutoConfiguration
 @RequestMapping("staticScanner")
 public class StaticScannerAPI {
 
-    @RequestMapping(value = "configureNotificationManager", method = RequestMethod.GET)
-    @ResponseBody
-    public boolean configureNotificationManager(@RequestParam String automationManagerHost, @RequestParam int automationManagerPort, @RequestParam String myContainerId) {
-        return StaticScannerService.configureNotificationManager(automationManagerHost, automationManagerPort, myContainerId);
+    private final StaticScannerService staticScannerService;
+
+    @Autowired
+    public StaticScannerAPI(StaticScannerService staticScannerService) {
+        this.staticScannerService = staticScannerService;
     }
 
-    @RequestMapping(value = "cloneProductFromGitHub", method = RequestMethod.GET)
+    @GetMapping("isReady")
     @ResponseBody
-    public String cloneProductFromGitHub(@RequestParam String url, @RequestParam String branch, @RequestParam String tag) {
-        return StaticScannerService.cloneProductFromGitHub(url, branch, tag);
+    public boolean isReady() {
+        return true;
     }
 
-    @RequestMapping(value = "uploadProductZipFileAndExtract", method = RequestMethod.POST)
+    @PostMapping("startScan")
     @ResponseBody
-    public String uploadProductZipFileAndExtract(@RequestParam MultipartFile file) {
-        return StaticScannerService.uploadProductZipFileAndExtract(file);
-    }
-
-    @RequestMapping(value = "runDependencyCheck", method = RequestMethod.GET)
-    @ResponseBody
-    public String runDependencyCheck() throws GitAPIException, MavenInvocationException, IOException {
-        return StaticScannerService.runDependencyCheck();
-    }
-
-    @RequestMapping(value = "runFindSecBugs", method = RequestMethod.GET)
-    @ResponseBody
-    public String runFindSecBugs() {
-        return StaticScannerService.runFindSecBugs();
+    public String startScan(@RequestParam String automationManagerHost,
+                            @RequestParam int automationManagerPort,
+                            @RequestParam String myContainerId,
+                            @RequestParam boolean isFileUpload,
+                            @RequestParam(required = false) MultipartFile zipFile,
+                            @RequestParam(required = false) String url,
+                            @RequestParam(required = false, defaultValue = "master") String branch,
+                            @RequestParam(required = false) String tag,
+                            @RequestParam boolean isFindSecBugs,
+                            @RequestParam boolean isDependencyCheck) {
+        return staticScannerService.startScan(automationManagerHost, automationManagerPort, myContainerId, isFileUpload, zipFile, url, branch, tag,
+                isFindSecBugs, isDependencyCheck);
     }
 
     @RequestMapping(value = "getReport", method = RequestMethod.GET, produces = "application/octet-stream")
     @ResponseBody
     public HttpResponse getReport(HttpServletResponse response, @RequestParam boolean dependencyCheckReport) {
-        return StaticScannerService.getReport(response, dependencyCheckReport);
+        return staticScannerService.getReport(response, dependencyCheckReport);
     }
 }
 

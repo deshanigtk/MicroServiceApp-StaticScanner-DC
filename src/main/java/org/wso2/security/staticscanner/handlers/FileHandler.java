@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 import org.wso2.security.staticscanner.Constants;
+import org.wso2.security.staticscanner.StaticScannerService;
+import org.wso2.security.staticscanner.scanners.MainScanner;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -82,82 +84,96 @@ public class FileHandler {
 
     }
 
-    public static String extractFolder(String zipFile) throws IOException {
-        int BUFFER = 2048;
-        File file = new File(zipFile);
+    public static String extractZipFile(String zipFile) {
+        try {
+            int BUFFER = 2048;
+            File file = new File(zipFile);
 
-        ZipFile zip = new ZipFile(file);
-        String newPath = file.getParent();
+            ZipFile zip = new ZipFile(file);
+            String newPath = file.getParent();
 
-        String fileName = file.getName();
+            String fileName = file.getName();
 
-        Enumeration zipFileEntries = zip.entries();
+            Enumeration zipFileEntries = zip.entries();
 
-        // Process each entry
-        while (zipFileEntries.hasMoreElements()) {
-            // grab a zip file entry
-            ZipEntry entry = (ZipEntry) zipFileEntries.nextElement();
-            String currentEntry = entry.getName();
-            File destFile = new File(newPath, currentEntry);
+            // Process each entry
+            while (zipFileEntries.hasMoreElements()) {
+                // grab a zip file entry
+                ZipEntry entry = (ZipEntry) zipFileEntries.nextElement();
+                String currentEntry = entry.getName();
+                File destFile = new File(newPath, currentEntry);
 
-            File destinationParent = destFile.getParentFile();
-            // create the parent directory structure if needed
-            destinationParent.mkdirs();
+                File destinationParent = destFile.getParentFile();
+                // create the parent directory structure if needed
+                destinationParent.mkdirs();
 
-            if (!entry.isDirectory()) {
-                BufferedInputStream is = new BufferedInputStream(zip
-                        .getInputStream(entry));
-                int currentByte;
-                // establish buffer for writing file
-                byte data[] = new byte[BUFFER];
+                if (!entry.isDirectory()) {
+                    BufferedInputStream is = new BufferedInputStream(zip
+                            .getInputStream(entry));
+                    int currentByte;
+                    // establish buffer for writing file
+                    byte data[] = new byte[BUFFER];
 
-                // write the current file to disk
-                FileOutputStream fos = new FileOutputStream(destFile);
-                BufferedOutputStream dest = new BufferedOutputStream(fos,
-                        BUFFER);
+                    // write the current file to disk
+                    FileOutputStream fos = new FileOutputStream(destFile);
+                    BufferedOutputStream dest = new BufferedOutputStream(fos,
+                            BUFFER);
 
-                // read and write until last byte is encountered
-                while ((currentByte = is.read(data, 0, BUFFER)) != -1) {
-                    dest.write(data, 0, currentByte);
-                }
-                dest.flush();
-                dest.close();
-                is.close();
-            }
-
-            if (currentEntry.endsWith(Constants.ZIP_FILE_EXTENSION)) {
-                // found a zip file, try to open
-                extractFolder(destFile.getAbsolutePath());
-            }
-        }
-        //FileUtils.deleteDirectory(new File(zipFile));
-        return fileName.substring(0, fileName.length() - 4);
-    }
-
-    public static String uploadFile(MultipartFile file) {
-        if (!file.isEmpty()) {
-            String fileName = file.getOriginalFilename();
-            if (fileName.endsWith(".zip")) {
-                try {
-                    byte[] bytes = file.getBytes();
-                    BufferedOutputStream stream =
-                            new BufferedOutputStream(new FileOutputStream(new File(Constants.DEFAULT_PRODUCT_PATH + File.separator + fileName)));
-                    stream.write(bytes);
-                    stream.close();
-                    LOGGER.info("File successfully uploaded");
-                    return fileName;
-
-                } catch (IOException e) {
-                    LOGGER.error("File is not uploaded" + e.toString());
+                    // read and write until last byte is encountered
+                    while ((currentByte = is.read(data, 0, BUFFER)) != -1) {
+                        dest.write(data, 0, currentByte);
+                    }
+                    dest.flush();
+                    dest.close();
+                    is.close();
                 }
 
-            } else {
-                LOGGER.error("Not a zip file");
+                if (currentEntry.endsWith(Constants.ZIP_FILE_EXTENSION)) {
+                    // found a zip file, try to open
+                    extractZipFile(destFile.getAbsolutePath());
+                }
             }
-        } else {
-            System.out.println("file empty: " + file.isEmpty());
-            LOGGER.error("No file");
+            //FileUtils.deleteDirectory(new File(zipFile));
+            return fileName.substring(0, fileName.length() - 4);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return null;
+    }
+
+    private static boolean uploadFile(MultipartFile file, String filePath) {
+        try {
+            byte[] bytes = file.getBytes();
+            BufferedOutputStream stream =
+                    new BufferedOutputStream(new FileOutputStream(new File(filePath)));
+            stream.write(bytes);
+            stream.close();
+            LOGGER.info("File successfully uploaded");
+            if (new File(filePath).exists()) {
+                return true;
+            }
+
+        } catch (IOException e) {
+            LOGGER.error("File is not uploaded" + e.toString());
+        }
+        return false;
+    }
+
+    public static boolean uploadProductZipAndExtract(MultipartFile zipFile) {
+        boolean isProductPathCreated = new File(Constants.DEFAULT_PRODUCT_PATH).exists() || new File(Constants.DEFAULT_PRODUCT_PATH).mkdir();
+        String fileName = zipFile.getOriginalFilename();
+
+        if (isProductPathCreated) {
+            String fileUploadPath = Constants.DEFAULT_PRODUCT_PATH + File.separator + fileName;
+            if (FileHandler.uploadFile(zipFile, fileUploadPath)) {
+                String folderName = FileHandler.extractZipFile(Constants.DEFAULT_PRODUCT_PATH + File.separator + fileName);
+                if (folderName != null) {
+                    MainScanner.setProductPath(Constants.DEFAULT_PRODUCT_PATH + File.separator + folderName);
+                    LOGGER.info("New product path: " + MainScanner.getProductPath());
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

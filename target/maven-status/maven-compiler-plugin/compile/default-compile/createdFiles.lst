@@ -5,13 +5,10 @@ org/wso2/security/staticscanner/handlers/FileHandler.class
 org/wso2/security/staticscanner/handlers/HttpRequestHandler.class
 org/wso2/security/staticscanner/Constants.class
 org/wso2/security/staticscanner/StaticScannerService$2.class
-org/wso2/security/staticscanner/StaticScannerService$3.class
 org/wso2/security/staticscanner/StaticScannerService.class
 org/wso2/security/staticscanner/App.class
 org/wso2/security/staticscanner/handlers/MavenHandler.class
 org/wso2/security/staticscanner/observarables/GitHandler.class
 org/wso2/security/staticscanner/handlers/XMLHandler.class
-org/wso2/security/staticscanner/StaticScannerService$4.class
 org/wso2/security/staticscanner/scanners/FindSecBugsScanner.class
-org/wso2/security/staticscanner/observarables/ProductZipFileHandler.class
 org/wso2/security/staticscanner/NotificationManager.class

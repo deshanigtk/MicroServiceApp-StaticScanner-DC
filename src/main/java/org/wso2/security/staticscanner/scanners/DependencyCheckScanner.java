@@ -30,7 +30,7 @@ import java.util.zip.ZipOutputStream;
 * under the License.
 */
 
-public class DependencyCheckScanner extends Observable implements Runnable {
+public class DependencyCheckScanner implements Runnable {
 
     //Maven Commands
     private static final String MVN_COMMAND_DEPENDENCY_CHECK = "org.owasp:dependency-check-maven:check";
@@ -40,18 +40,16 @@ public class DependencyCheckScanner extends Observable implements Runnable {
     public void run() {
         try {
             startScan();
-            setChanged();
-            notifyObservers(true);
         } catch (IOException | MavenInvocationException e) {
             e.printStackTrace();
         }
     }
 
     private void startScan() throws IOException, MavenInvocationException {
-        MavenHandler.runMavenCommand(StaticScannerService.getProductPath() + File.separator + Constants.POM_FILE, MVN_COMMAND_DEPENDENCY_CHECK);
+        MavenHandler.runMavenCommand(MainScanner.getProductPath() + File.separator + Constants.POM_FILE, MVN_COMMAND_DEPENDENCY_CHECK);
 
-        String reportsFolderPath = StaticScannerService.getProductPath() + File.separator + Constants.DEPENDENCY_CHECK_REPORTS_FOLDER;
-        FileHandler.findFilesAndMoveToFolder(StaticScannerService.getProductPath(), reportsFolderPath, Constants.DEPENDENCY_CHECK_REPORT);
+        String reportsFolderPath = MainScanner.getProductPath() + File.separator + Constants.DEPENDENCY_CHECK_REPORTS_FOLDER;
+        FileHandler.findFilesAndMoveToFolder(MainScanner.getProductPath(), reportsFolderPath, Constants.DEPENDENCY_CHECK_REPORT);
 
         FileOutputStream fos = new FileOutputStream(reportsFolderPath + Constants.ZIP_FILE_EXTENSION);
         ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(reportsFolderPath + Constants.ZIP_FILE_EXTENSION));
