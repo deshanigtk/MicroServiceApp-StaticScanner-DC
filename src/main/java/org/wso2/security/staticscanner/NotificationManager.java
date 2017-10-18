@@ -56,13 +56,11 @@ public class NotificationManager {
         NotificationManager.automationManagerPort = automationManagerPort;
     }
 
-
-    private static void notifyStatus(String path, boolean status, String time) {
+    private static void notifyStatus(String path, boolean status) {
         try {
             URI uri = (new URIBuilder()).setHost(automationManagerHost).setPort(automationManagerPort).setScheme("http").setPath(path)
                     .addParameter("containerId", myContainerId)
                     .addParameter("status", String.valueOf(status))
-                    .addParameter("time", time)
                     .build();
             HttpRequestHandler.sendGetRequest(uri);
         } catch (URISyntaxException | IOException e) {
@@ -71,12 +69,11 @@ public class NotificationManager {
         }
     }
 
-    private static void notifyScanStatus(String path, String status, String time) {
+    private static void notifyScanStatus(String path, String status) {
         try {
             URI uri = (new URIBuilder()).setHost(automationManagerHost).setPort(automationManagerPort).setScheme("http").setPath(path)
                     .addParameter("containerId", myContainerId)
                     .addParameter("status", status)
-                    .addParameter("time", time)
                     .build();
             HttpRequestHandler.sendGetRequest(uri);
         } catch (URISyntaxException | IOException e) {
@@ -85,31 +82,32 @@ public class NotificationManager {
         }
     }
 
-    public static void notifyFileUploaded(boolean status, String time) {
-        notifyStatus(FILE_UPLOADED, status, time);
+    public static void notifyFileUploaded(boolean status) {
+        notifyStatus(FILE_UPLOADED, status);
     }
 
-    public static void notifyFileExtracted(boolean status, String time) {
-        notifyStatus(FILE_EXTRACTED, status, time);
+    public static void notifyFileExtracted(boolean status) {
+        notifyStatus(FILE_EXTRACTED, status);
     }
 
-    public static void notifyProductCloned(boolean status, String time) {
-        notifyStatus(PRODUCT_CLONED, status, time);
+    public static void notifyProductCloned(boolean status) {
+        notifyStatus(PRODUCT_CLONED, status);
     }
 
-    public static void notifyDependencyCheckStatus(String status, String time){
-        notifyScanStatus(DEPENDENCY_CHECK_STATUS,status, time);
+    public static void notifyDependencyCheckStatus(String status) {
+        notifyScanStatus(DEPENDENCY_CHECK_STATUS, status);
     }
 
-    public static void notifyFindSecBugsStatus(String status, String time){
-        notifyScanStatus(FIND_SEC_BUGS_STATUS,status, time);
-    }
-    public static void notifyFindSecBugsReportReady(boolean status, String time) {
-        notifyStatus(FIND_SEC_BUGS_REPORT_READY, status, time);
+    public static void notifyFindSecBugsStatus(String status) {
+        notifyScanStatus(FIND_SEC_BUGS_STATUS, status);
     }
 
-    public static void notifyDependencyCheckReportReady(boolean status, String time) {
-        notifyStatus(DEPENDENCY_CHECK_REPORT_READY, status, time);
+    public static void notifyFindSecBugsReportReady(boolean status) {
+        notifyStatus(FIND_SEC_BUGS_REPORT_READY, status);
+    }
+
+    public static void notifyDependencyCheckReportReady(boolean status) {
+        notifyStatus(DEPENDENCY_CHECK_REPORT_READY, status);
     }
 
     public static boolean isConfigured() {

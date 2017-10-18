@@ -1,8 +1,11 @@
 package org.wso2.security.staticscanner.scanners;
 
 import org.apache.maven.shared.invoker.MavenInvocationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.wso2.security.staticscanner.Constants;
+import org.wso2.security.staticscanner.NotificationManager;
 import org.wso2.security.staticscanner.handlers.FileHandler;
 import org.wso2.security.staticscanner.handlers.MavenHandler;
 import org.wso2.security.staticscanner.handlers.XMLHandler;
@@ -50,12 +53,16 @@ public class FindSecBugsScanner implements Runnable {
     private static final String MVN_COMMAND_FIND_SEC_BUGS = "findbugs:findbugs";
     private static final String MVN_COMMAND_COMPILE = "compile";
 
+    private final Logger LOGGER = LoggerFactory.getLogger(FindSecBugsScanner.class);
+
     @Override
     public void run() {
         try {
             startScan();
         } catch (ParserConfigurationException | TransformerException | IOException | SAXException | MavenInvocationException e) {
             e.printStackTrace();
+            LOGGER.error(e.getMessage());
+            NotificationManager.notifyFindSecBugsStatus("failed");
         }
     }
 

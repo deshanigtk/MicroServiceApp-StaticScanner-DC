@@ -1,7 +1,10 @@
 package org.wso2.security.staticscanner.scanners;
 
 import org.apache.maven.shared.invoker.MavenInvocationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wso2.security.staticscanner.Constants;
+import org.wso2.security.staticscanner.NotificationManager;
 import org.wso2.security.staticscanner.handlers.FileHandler;
 import org.wso2.security.staticscanner.handlers.MavenHandler;
 import org.wso2.security.staticscanner.StaticScannerService;
@@ -35,6 +38,7 @@ public class DependencyCheckScanner implements Runnable {
     //Maven Commands
     private static final String MVN_COMMAND_DEPENDENCY_CHECK = "org.owasp:dependency-check-maven:check";
 
+    private final Logger LOGGER = LoggerFactory.getLogger(DependencyCheckScanner.class);
 
     @Override
     public void run() {
@@ -42,6 +46,8 @@ public class DependencyCheckScanner implements Runnable {
             startScan();
         } catch (IOException | MavenInvocationException e) {
             e.printStackTrace();
+            LOGGER.error(e.getMessage());
+            NotificationManager.notifyDependencyCheckStatus("failed");
         }
     }
 

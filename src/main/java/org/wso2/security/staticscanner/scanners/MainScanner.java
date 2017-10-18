@@ -24,8 +24,6 @@ import org.wso2.security.staticscanner.NotificationManager;
 import org.wso2.security.staticscanner.handlers.FileHandler;
 import org.wso2.security.staticscanner.handlers.GitHandler;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Observable;
 
 public class MainScanner extends Observable implements Runnable {
@@ -75,13 +73,12 @@ public class MainScanner extends Observable implements Runnable {
                 runDependencyCheck();
             }
         }
-        LOGGER.error("Product upload/ clone failed");
     }
 
     private boolean cloneProductFromGitHub(String url, String branch, String tag) {
         if (GitHandler.startClone(url, branch, tag)) {
             LOGGER.info("Product cloned successfully");
-            NotificationManager.notifyProductCloned(true, new SimpleDateFormat("yyyy-MM-dd:HH.mm.ss").format(new Date()));
+            NotificationManager.notifyProductCloned(true);
             return true;
         }
         LOGGER.error("Git clone failed");
@@ -90,7 +87,7 @@ public class MainScanner extends Observable implements Runnable {
 
     private boolean uploadProductZipFileAndExtract(MultipartFile zipFile) {
         if (FileHandler.uploadProductZipAndExtract(zipFile)) {
-            NotificationManager.notifyFileExtracted(true, new SimpleDateFormat("yyyy-MM-dd:HH.mm.ss").format(new Date()));
+            NotificationManager.notifyFileExtracted(true);
             LOGGER.info("Product is successfully uploaded and extracted");
             return true;
         }
@@ -102,14 +99,14 @@ public class MainScanner extends Observable implements Runnable {
         FindSecBugsScanner findSecBugsScanner = new FindSecBugsScanner();
         new Thread(findSecBugsScanner).start();
         LOGGER.info("FindSecBugs started");
-        NotificationManager.notifyFindSecBugsStatus("running", new SimpleDateFormat("yyyy-MM-dd:HH.mm.ss").format(new Date()));
+        NotificationManager.notifyFindSecBugsStatus("running");
     }
 
     private void runDependencyCheck() {
         DependencyCheckScanner dependencyCheckScanner = new DependencyCheckScanner();
         new Thread(dependencyCheckScanner).start();
         LOGGER.info("Dependency Check started");
-        NotificationManager.notifyDependencyCheckStatus("running", new SimpleDateFormat("yyyy-MM-dd:HH.mm.ss").format(new Date()));
+        NotificationManager.notifyDependencyCheckStatus("running");
     }
 
     public static void setProductPath(String productPath) {

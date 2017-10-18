@@ -29,8 +29,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -53,7 +51,7 @@ public class StaticScannerService {
     public String startScan(String automationManagerHost, int automationManagerPort, String containerId, boolean isFileUpload,
                             MultipartFile zipFile, String url, String branch, String tag, boolean isFindSecBugs, boolean isDependencyCheck) {
 
-        if (configureNotificationManager(automationManagerHost, automationManagerPort, containerId)) {
+        if (!configureNotificationManager(automationManagerHost, automationManagerPort, containerId)) {
             return "Notification manager is not configured";
         }
         if (isFileUpload) {
@@ -75,7 +73,7 @@ public class StaticScannerService {
                 if (isFindSecBugs) {
                     if (new File(getProductPath() + File.separator + Constants.FIND_SEC_BUGS_REPORTS_FOLDER + Constants.ZIP_FILE_EXTENSION).exists()) {
                         LOGGER.info("FindSecBugs scanning completed");
-                        NotificationManager.notifyFindSecBugsReportReady(true, new SimpleDateFormat("yyyy-MM-dd:HH.mm.ss").format(new Date()));
+                        NotificationManager.notifyFindSecBugsReportReady(true);
                     } else {
                         LOGGER.error("FindSecBugs scan failed");
                     }
@@ -83,7 +81,7 @@ public class StaticScannerService {
                 if (isDependencyCheck) {
                     if (new File(getProductPath() + File.separator + Constants.DEPENDENCY_CHECK_REPORTS_FOLDER + Constants.ZIP_FILE_EXTENSION).exists()) {
                         LOGGER.info("Successfully completed Dependency Check Scan");
-                        NotificationManager.notifyDependencyCheckReportReady(true, new SimpleDateFormat("yyyy-MM-dd:HH.mm.ss").format(new Date()));
+                        NotificationManager.notifyDependencyCheckReportReady(true);
                     } else {
                         LOGGER.error("Dependency Check scan failed");
                     }
