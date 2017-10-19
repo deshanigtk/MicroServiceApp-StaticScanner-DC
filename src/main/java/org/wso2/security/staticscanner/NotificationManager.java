@@ -28,14 +28,12 @@ import java.net.URISyntaxException;
 public class NotificationManager {
 
     private final static String NOTIFY = "/staticScanner/notify";
-    private final static String FILE_UPLOADED = NOTIFY + "/fileUploaded";
     private final static String FILE_EXTRACTED = NOTIFY + "/fileExtracted";
     private final static String PRODUCT_CLONED = NOTIFY + "/productCloned";
     private final static String DEPENDENCY_CHECK_STATUS = NOTIFY + "/dependencyCheckStatus";
     private final static String FIND_SEC_BUGS_STATUS = NOTIFY + "/findSecBugsStatus";
-
-    private final static String DEPENDENCY_CHECK_REPORT_READY = NOTIFY + "/dependencyCheckReportReady";
     private final static String FIND_SEC_BUGS_REPORT_READY = NOTIFY + "/findSecBugsReportReady";
+    private final static String DEPENDENCY_CHECK_REPORT_READY = NOTIFY + "/dependencyCheckReportReady";
 
     private static String myContainerId;
     private static String automationManagerHost;
@@ -82,10 +80,6 @@ public class NotificationManager {
         }
     }
 
-    public static void notifyFileUploaded(boolean status) {
-        notifyStatus(FILE_UPLOADED, status);
-    }
-
     public static void notifyFileExtracted(boolean status) {
         notifyStatus(FILE_EXTRACTED, status);
     }
@@ -94,12 +88,12 @@ public class NotificationManager {
         notifyStatus(PRODUCT_CLONED, status);
     }
 
-    public static void notifyDependencyCheckStatus(String status) {
-        notifyScanStatus(DEPENDENCY_CHECK_STATUS, status);
-    }
-
     public static void notifyFindSecBugsStatus(String status) {
         notifyScanStatus(FIND_SEC_BUGS_STATUS, status);
+    }
+
+    public static void notifyDependencyCheckStatus(String status) {
+        notifyScanStatus(DEPENDENCY_CHECK_STATUS, status);
     }
 
     public static void notifyFindSecBugsReportReady(boolean status) {

@@ -2,6 +2,7 @@ package org.wso2.security.staticscanner.handlers;
 
 import org.apache.maven.shared.invoker.*;
 import org.wso2.security.staticscanner.Constants;
+import org.wso2.security.staticscanner.scanners.MainScanner;
 
 import java.io.File;
 import java.util.Collections;
@@ -32,7 +33,7 @@ public class MavenHandler {
     public static void runMavenCommand(String pomFilePath, String mavenCommand) throws MavenInvocationException {
         InvocationRequest request = new DefaultInvocationRequest();
         request.setPomFile(new File(pomFilePath));
-        request.setBaseDirectory(new File(Constants.DEFAULT_PRODUCT_PATH));
+        request.setBaseDirectory(new File(MainScanner.getProductPath()));
         request.setGoals(Collections.singletonList(mavenCommand));
 
         Invoker invoker = new DefaultInvoker();

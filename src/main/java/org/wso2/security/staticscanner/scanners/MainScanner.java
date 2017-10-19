@@ -61,52 +61,31 @@ public class MainScanner extends Observable implements Runnable {
     private void startScan() {
         boolean isProductAvailable;
         if (isFileUpload) {
-            isProductAvailable = uploadProductZipFileAndExtract(zipFile);
+            isProductAvailable = FileHandler.uploadProductZipAndExtract(zipFile);
+            if (isProductAvailable) {
+                NotificationManager.notifyFileExtracted(true);
+                LOGGER.info("Product is successfully uploaded and extracted");
+            }
         } else {
-            isProductAvailable = cloneProductFromGitHub(url, branch, tag);
+            isProductAvailable = GitHandler.startClone(url, branch, tag);
+            if (isProductAvailable) {
+                LOGGER.info("Product cloned successfully");
+                NotificationManager.notifyProductCloned(true);
+            }
         }
         if (isProductAvailable) {
-            if (isFindSecBugs) {
-                runFindSecBugs();
-            }
             if (isDependencyCheck) {
-                runDependencyCheck();
+                DependencyCheckScanner.startScan();
+                LOGGER.info("Dependency Check started");
+                NotificationManager.notifyDependencyCheckStatus("running");
             }
+            if (isFindSecBugs) {
+                FindSecBugsScanner.startScan();
+                LOGGER.info("FindSecBugs started");
+                NotificationManager.notifyFindSecBugsStatus("running");
+            }
+
         }
-    }
-
-    private boolean cloneProductFromGitHub(String url, String branch, String tag) {
-        if (GitHandler.startClone(url, branch, tag)) {
-            LOGGER.info("Product cloned successfully");
-            NotificationManager.notifyProductCloned(true);
-            return true;
-        }
-        LOGGER.error("Git clone failed");
-        return false;
-    }
-
-    private boolean uploadProductZipFileAndExtract(MultipartFile zipFile) {
-        if (FileHandler.uploadProductZipAndExtract(zipFile)) {
-            NotificationManager.notifyFileExtracted(true);
-            LOGGER.info("Product is successfully uploaded and extracted");
-            return true;
-        }
-        return false;
-    }
-
-
-    private void runFindSecBugs() {
-        FindSecBugsScanner findSecBugsScanner = new FindSecBugsScanner();
-        new Thread(findSecBugsScanner).start();
-        LOGGER.info("FindSecBugs started");
-        NotificationManager.notifyFindSecBugsStatus("running");
-    }
-
-    private void runDependencyCheck() {
-        DependencyCheckScanner dependencyCheckScanner = new DependencyCheckScanner();
-        new Thread(dependencyCheckScanner).start();
-        LOGGER.info("Dependency Check started");
-        NotificationManager.notifyDependencyCheckStatus("running");
     }
 
     public static void setProductPath(String productPath) {

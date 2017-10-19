@@ -9,7 +9,6 @@ import org.wso2.security.staticscanner.NotificationManager;
 import org.wso2.security.staticscanner.handlers.FileHandler;
 import org.wso2.security.staticscanner.handlers.MavenHandler;
 import org.wso2.security.staticscanner.handlers.XMLHandler;
-import org.wso2.security.staticscanner.StaticScannerService;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -43,7 +42,7 @@ import java.util.zip.ZipOutputStream;
 * under the License.
 */
 
-public class FindSecBugsScanner implements Runnable {
+public class FindSecBugsScanner {
     //FindSecBugs related
     private static final String FIND_BUGS_REPORT = "findbugsXml.xml";
     private static final String FINDBUGS_SECURITY_INCLUDE = "findbugs-security-include.xml";
@@ -53,68 +52,62 @@ public class FindSecBugsScanner implements Runnable {
     private static final String MVN_COMMAND_FIND_SEC_BUGS = "findbugs:findbugs";
     private static final String MVN_COMMAND_COMPILE = "compile";
 
-    private final Logger LOGGER = LoggerFactory.getLogger(FindSecBugsScanner.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FindSecBugsScanner.class);
 
-    @Override
-    public void run() {
+    public static void startScan() {
         try {
-            startScan();
-        } catch (ParserConfigurationException | TransformerException | IOException | SAXException | MavenInvocationException e) {
+            //Create new files as "findbugs-security-include.xml" and "findbugs-security-exclude.xml"
+            File findBugsSecIncludeFile = new File(MainScanner.getProductPath() + File.separator + FINDBUGS_SECURITY_INCLUDE);
+            File findBugsSecExcludeFile = new File(MainScanner.getProductPath() + File.separator + FINDBUGS_SECURITY_EXCLUDE);
+
+            File productPomFile = new File(MainScanner.getProductPath() + File.separator + Constants.POM_FILE);
+
+            DocumentBuilder dBuilder;
+            dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+
+            assert dBuilder != null;
+            Document findBugsSecIncludeDocument = dBuilder.newDocument();
+            Document findBugsSecExcludeDocument = dBuilder.newDocument();
+            XMLHandler.writeFindSecBugsIncludeFile(findBugsSecIncludeDocument);
+            XMLHandler.writeFindSecBugsExcludeFile(findBugsSecExcludeDocument);
+
+            Document findBugsPluginDocument;
+            findBugsPluginDocument = dBuilder.parse(productPomFile);
+            findBugsPluginDocument = XMLHandler.iterateNode(findBugsPluginDocument.getDocumentElement(), findBugsPluginDocument);
+
+            DOMSource findBugsSecIncludeSource = new DOMSource(findBugsSecIncludeDocument);
+            DOMSource findBugsSecExcludeSource = new DOMSource(findBugsSecExcludeDocument);
+            DOMSource findBugsPluginSource = new DOMSource(findBugsPluginDocument);
+
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer;
+            transformer = transformerFactory.newTransformer();
+
+            StreamResult findBugsSecurityIncludeResult = new StreamResult(findBugsSecIncludeFile);
+            StreamResult findBugsSecurityExcludeResult = new StreamResult(findBugsSecExcludeFile);
+            StreamResult result = new StreamResult(MainScanner.getProductPath() + File.separator + Constants.POM_FILE);
+
+            transformer.transform(findBugsSecIncludeSource, findBugsSecurityIncludeResult);
+            transformer.transform(findBugsSecExcludeSource, findBugsSecurityExcludeResult);
+            transformer.transform(findBugsPluginSource, result);
+            MavenHandler.runMavenCommand(MainScanner.getProductPath() + File.separator + Constants.POM_FILE, MVN_COMMAND_COMPILE);
+            MavenHandler.runMavenCommand(MainScanner.getProductPath() + File.separator + Constants.POM_FILE, MVN_COMMAND_FIND_SEC_BUGS);
+
+            String reportsFolderPath = MainScanner.getProductPath() + File.separator + Constants.FIND_SEC_BUGS_REPORTS_FOLDER;
+            FileHandler.findFilesAndMoveToFolder(MainScanner.getProductPath(), reportsFolderPath, FIND_BUGS_REPORT);
+
+            FileOutputStream fos = new FileOutputStream(reportsFolderPath + Constants.ZIP_FILE_EXTENSION);
+            ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(reportsFolderPath + Constants.ZIP_FILE_EXTENSION));
+            File fileToZip = new File(reportsFolderPath);
+
+            FileHandler.zipFile(fileToZip, fileToZip.getName(), zipOut);
+            zipOut.close();
+            fos.close();
+        } catch (IOException | ParserConfigurationException | TransformerException | MavenInvocationException | SAXException e) {
             e.printStackTrace();
             LOGGER.error(e.getMessage());
             NotificationManager.notifyFindSecBugsStatus("failed");
         }
-    }
-
-    private void startScan() throws ParserConfigurationException, TransformerException, IOException, SAXException, MavenInvocationException {
-
-        //Create new files as "findbugs-security-include.xml" and "findbugs-security-exclude.xml"
-        File findBugsSecIncludeFile = new File(MainScanner.getProductPath() + File.separator + FINDBUGS_SECURITY_INCLUDE);
-        File findBugsSecExcludeFile = new File(MainScanner.getProductPath() + File.separator + FINDBUGS_SECURITY_EXCLUDE);
-
-        File productPomFile = new File(MainScanner.getProductPath() + File.separator + Constants.POM_FILE);
-
-        DocumentBuilder dBuilder;
-        dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-
-        assert dBuilder != null;
-        Document findBugsSecIncludeDocument = dBuilder.newDocument();
-        Document findBugsSecExcludeDocument = dBuilder.newDocument();
-        XMLHandler.writeFindSecBugsIncludeFile(findBugsSecIncludeDocument);
-        XMLHandler.writeFindSecBugsExcludeFile(findBugsSecExcludeDocument);
-
-        Document findBugsPluginDocument;
-        findBugsPluginDocument = dBuilder.parse(productPomFile);
-        findBugsPluginDocument = XMLHandler.iterateNode(findBugsPluginDocument.getDocumentElement(), findBugsPluginDocument);
-
-        DOMSource findBugsSecIncludeSource = new DOMSource(findBugsSecIncludeDocument);
-        DOMSource findBugsSecExcludeSource = new DOMSource(findBugsSecExcludeDocument);
-        DOMSource findBugsPluginSource = new DOMSource(findBugsPluginDocument);
-
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer;
-        transformer = transformerFactory.newTransformer();
-
-        StreamResult findBugsSecurityIncludeResult = new StreamResult(findBugsSecIncludeFile);
-        StreamResult findBugsSecurityExcludeResult = new StreamResult(findBugsSecExcludeFile);
-        StreamResult result = new StreamResult(MainScanner.getProductPath() + File.separator + Constants.POM_FILE);
-
-        transformer.transform(findBugsSecIncludeSource, findBugsSecurityIncludeResult);
-        transformer.transform(findBugsSecExcludeSource, findBugsSecurityExcludeResult);
-        transformer.transform(findBugsPluginSource, result);
-        MavenHandler.runMavenCommand(MainScanner.getProductPath() + File.separator + Constants.POM_FILE, MVN_COMMAND_COMPILE);
-        MavenHandler.runMavenCommand(MainScanner.getProductPath() + File.separator + Constants.POM_FILE, MVN_COMMAND_FIND_SEC_BUGS);
-
-        String reportsFolderPath = MainScanner.getProductPath() + File.separator + Constants.FIND_SEC_BUGS_REPORTS_FOLDER;
-        FileHandler.findFilesAndMoveToFolder(MainScanner.getProductPath(), reportsFolderPath, FIND_BUGS_REPORT);
-
-        FileOutputStream fos = new FileOutputStream(reportsFolderPath + Constants.ZIP_FILE_EXTENSION);
-        ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(reportsFolderPath + Constants.ZIP_FILE_EXTENSION));
-        File fileToZip = new File(reportsFolderPath);
-
-        FileHandler.zipFile(fileToZip, fileToZip.getName(), zipOut);
-        zipOut.close();
-        fos.close();
 
     }
 }

@@ -31,6 +31,8 @@ public class StaticScannerAPI {
 
     private final StaticScannerService staticScannerService;
 
+    //TODO:send error messages to automation manager
+
     @Autowired
     public StaticScannerAPI(StaticScannerService staticScannerService) {
         this.staticScannerService = staticScannerService;

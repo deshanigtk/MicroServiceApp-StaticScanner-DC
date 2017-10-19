@@ -29,7 +29,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Observable;
 import java.util.Observer;
 
 import static org.wso2.security.staticscanner.scanners.MainScanner.getProductPath;
@@ -67,24 +66,23 @@ public class StaticScannerService {
             return "Please enter a scan to process";
         }
 
-        Observer mainScannerObserver = new Observer() {
-            @Override
-            public void update(Observable o, Object arg) {
-                if (isFindSecBugs) {
-                    if (new File(getProductPath() + File.separator + Constants.FIND_SEC_BUGS_REPORTS_FOLDER + Constants.ZIP_FILE_EXTENSION).exists()) {
-                        LOGGER.info("FindSecBugs scanning completed");
-                        NotificationManager.notifyFindSecBugsReportReady(true);
-                    } else {
-                        LOGGER.error("FindSecBugs scan failed");
-                    }
+        Observer mainScannerObserver = (o, arg) -> {
+            if (isFindSecBugs) {
+                if (new File(getProductPath() + File.separator + Constants.FIND_SEC_BUGS_REPORTS_FOLDER + Constants.ZIP_FILE_EXTENSION).exists()) {
+                    LOGGER.info("FindSecBugs scanning completed");
+                    NotificationManager.notifyFindSecBugsStatus("completed");
+                    NotificationManager.notifyFindSecBugsReportReady(true);
+                } else {
+                    LOGGER.error("FindSecBugs scan failed");
                 }
-                if (isDependencyCheck) {
-                    if (new File(getProductPath() + File.separator + Constants.DEPENDENCY_CHECK_REPORTS_FOLDER + Constants.ZIP_FILE_EXTENSION).exists()) {
-                        LOGGER.info("Successfully completed Dependency Check Scan");
-                        NotificationManager.notifyDependencyCheckReportReady(true);
-                    } else {
-                        LOGGER.error("Dependency Check scan failed");
-                    }
+            }
+            if (isDependencyCheck) {
+                if (new File(getProductPath() + File.separator + Constants.DEPENDENCY_CHECK_REPORTS_FOLDER + Constants.ZIP_FILE_EXTENSION).exists()) {
+                    LOGGER.info("Successfully completed Dependency Check Scan");
+                    NotificationManager.notifyDependencyCheckStatus("completed");
+                    NotificationManager.notifyDependencyCheckReportReady(true);
+                } else {
+                    LOGGER.error("Dependency Check scan failed");
                 }
             }
         };
