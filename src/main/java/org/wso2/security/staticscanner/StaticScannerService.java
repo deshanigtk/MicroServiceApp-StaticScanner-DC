@@ -22,14 +22,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.wso2.security.staticscanner.handlers.FileHandler;
 import org.wso2.security.staticscanner.scanners.MainScanner;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Observer;
+import java.util.zip.ZipOutputStream;
 
 import static org.wso2.security.staticscanner.scanners.MainScanner.getProductPath;
 
@@ -68,7 +67,7 @@ public class StaticScannerService {
 
         Observer mainScannerObserver = (o, arg) -> {
             if (isFindSecBugs) {
-                if (new File(getProductPath() + File.separator + Constants.FIND_SEC_BUGS_REPORTS_FOLDER + Constants.ZIP_FILE_EXTENSION).exists()) {
+                if (new File(Constants.REPORTS_FOLDER_PATH + File.separator + Constants.FIND_SEC_BUGS_REPORTS_FOLDER).exists()) {
                     LOGGER.info("FindSecBugs scanning completed");
                     NotificationManager.notifyFindSecBugsStatus("completed");
                     NotificationManager.notifyFindSecBugsReportReady(true);
@@ -77,13 +76,25 @@ public class StaticScannerService {
                 }
             }
             if (isDependencyCheck) {
-                if (new File(getProductPath() + File.separator + Constants.DEPENDENCY_CHECK_REPORTS_FOLDER + Constants.ZIP_FILE_EXTENSION).exists()) {
+                if (new File(Constants.REPORTS_FOLDER_PATH + File.separator + Constants.DEPENDENCY_CHECK_REPORTS_FOLDER).exists()) {
                     LOGGER.info("Successfully completed Dependency Check Scan");
                     NotificationManager.notifyDependencyCheckStatus("completed");
                     NotificationManager.notifyDependencyCheckReportReady(true);
                 } else {
                     LOGGER.error("Dependency Check scan failed");
                 }
+            }
+            try {
+                FileOutputStream fos = new FileOutputStream(Constants.REPORTS_FOLDER_PATH + File.separator + Constants.ZIP_FILE_EXTENSION);
+                ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(Constants.REPORTS_FOLDER_PATH + File.separator + Constants.ZIP_FILE_EXTENSION));
+                File fileToZip = new File(Constants.REPORTS_FOLDER_PATH);
+
+                FileHandler.zipFile(fileToZip, fileToZip.getName(), zipOut);
+                zipOut.close();
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                LOGGER.error(e.getMessage());
             }
         };
 
@@ -93,13 +104,9 @@ public class StaticScannerService {
         return "Ok";
     }
 
-    public HttpResponse getReport(HttpServletResponse response, boolean dependencyCheckReport) {
-        String reportsPath;
-        if (dependencyCheckReport) {
-            reportsPath = getProductPath() + File.separator + Constants.DEPENDENCY_CHECK_REPORTS_FOLDER + Constants.ZIP_FILE_EXTENSION;
-        } else {
-            reportsPath = getProductPath() + File.separator + Constants.FIND_SEC_BUGS_REPORTS_FOLDER + Constants.ZIP_FILE_EXTENSION;
-        }
+    public HttpResponse getReport(HttpServletResponse response) {
+        String reportsPath = Constants.REPORTS_FOLDER_PATH + Constants.ZIP_FILE_EXTENSION;
+
         if (new File(reportsPath).exists()) {
             try {
                 InputStream inputStream = new FileInputStream(reportsPath);

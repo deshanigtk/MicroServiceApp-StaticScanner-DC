@@ -38,7 +38,6 @@ public class MainScanner extends Observable implements Runnable {
 
     private static String productPath = Constants.DEFAULT_PRODUCT_PATH;
 
-
     private final Logger LOGGER = LoggerFactory.getLogger(MainScanner.class);
 
     @Override
@@ -76,15 +75,10 @@ public class MainScanner extends Observable implements Runnable {
         if (isProductAvailable) {
             if (isDependencyCheck) {
                 DependencyCheckScanner.startScan();
-                LOGGER.info("Dependency Check started");
-                NotificationManager.notifyDependencyCheckStatus("running");
             }
             if (isFindSecBugs) {
                 FindSecBugsScanner.startScan();
-                LOGGER.info("FindSecBugs started");
-                NotificationManager.notifyFindSecBugsStatus("running");
             }
-
         }
     }
 

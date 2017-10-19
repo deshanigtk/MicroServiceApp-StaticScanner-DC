@@ -56,6 +56,9 @@ public class FindSecBugsScanner {
 
     public static void startScan() {
         try {
+            LOGGER.info("FindSecBugs started");
+            NotificationManager.notifyFindSecBugsStatus("running");
+
             //Create new files as "findbugs-security-include.xml" and "findbugs-security-exclude.xml"
             File findBugsSecIncludeFile = new File(MainScanner.getProductPath() + File.separator + FINDBUGS_SECURITY_INCLUDE);
             File findBugsSecExcludeFile = new File(MainScanner.getProductPath() + File.separator + FINDBUGS_SECURITY_EXCLUDE);
@@ -93,16 +96,11 @@ public class FindSecBugsScanner {
             MavenHandler.runMavenCommand(MainScanner.getProductPath() + File.separator + Constants.POM_FILE, MVN_COMMAND_COMPILE);
             MavenHandler.runMavenCommand(MainScanner.getProductPath() + File.separator + Constants.POM_FILE, MVN_COMMAND_FIND_SEC_BUGS);
 
-            String reportsFolderPath = MainScanner.getProductPath() + File.separator + Constants.FIND_SEC_BUGS_REPORTS_FOLDER;
-            FileHandler.findFilesAndMoveToFolder(MainScanner.getProductPath(), reportsFolderPath, FIND_BUGS_REPORT);
+            if (new File(Constants.REPORTS_FOLDER_PATH).exists() || new File(Constants.REPORTS_FOLDER_PATH).mkdir()) {
 
-            FileOutputStream fos = new FileOutputStream(reportsFolderPath + Constants.ZIP_FILE_EXTENSION);
-            ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(reportsFolderPath + Constants.ZIP_FILE_EXTENSION));
-            File fileToZip = new File(reportsFolderPath);
-
-            FileHandler.zipFile(fileToZip, fileToZip.getName(), zipOut);
-            zipOut.close();
-            fos.close();
+                String reportsFolderPath = Constants.REPORTS_FOLDER_PATH + File.separator + Constants.FIND_SEC_BUGS_REPORTS_FOLDER;
+                FileHandler.findFilesAndMoveToFolder(MainScanner.getProductPath(), reportsFolderPath, FIND_BUGS_REPORT);
+            }
         } catch (IOException | ParserConfigurationException | TransformerException | MavenInvocationException | SAXException e) {
             e.printStackTrace();
             LOGGER.error(e.getMessage());

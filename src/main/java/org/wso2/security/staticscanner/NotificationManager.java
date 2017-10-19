@@ -27,7 +27,7 @@ import java.net.URISyntaxException;
 
 public class NotificationManager {
 
-    private final static String NOTIFY = "/staticScanner/notify";
+    private final static String NOTIFY = "automationManager/staticScanner/notify";
     private final static String FILE_EXTRACTED = NOTIFY + "/fileExtracted";
     private final static String PRODUCT_CLONED = NOTIFY + "/productCloned";
     private final static String DEPENDENCY_CHECK_STATUS = NOTIFY + "/dependencyCheckStatus";

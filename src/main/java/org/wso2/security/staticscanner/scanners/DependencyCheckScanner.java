@@ -7,13 +7,10 @@ import org.wso2.security.staticscanner.Constants;
 import org.wso2.security.staticscanner.NotificationManager;
 import org.wso2.security.staticscanner.handlers.FileHandler;
 import org.wso2.security.staticscanner.handlers.MavenHandler;
-import org.wso2.security.staticscanner.StaticScannerService;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Observable;
 import java.util.zip.ZipOutputStream;
 
 /*
@@ -34,27 +31,24 @@ import java.util.zip.ZipOutputStream;
 * under the License.
 */
 
-public class DependencyCheckScanner{
+public class DependencyCheckScanner {
 
     //Maven Commands
     private static final String MVN_COMMAND_DEPENDENCY_CHECK = "org.owasp:dependency-check-maven:check";
-
     private static final Logger LOGGER = LoggerFactory.getLogger(DependencyCheckScanner.class);
 
     public static void startScan() {
         try {
+
+            LOGGER.info("Dependency Check started");
+            NotificationManager.notifyDependencyCheckStatus("running");
+
             MavenHandler.runMavenCommand(MainScanner.getProductPath() + File.separator + Constants.POM_FILE, MVN_COMMAND_DEPENDENCY_CHECK);
 
-            String reportsFolderPath = MainScanner.getProductPath() + File.separator + Constants.DEPENDENCY_CHECK_REPORTS_FOLDER;
-            FileHandler.findFilesAndMoveToFolder(MainScanner.getProductPath(), reportsFolderPath, Constants.DEPENDENCY_CHECK_REPORT);
-
-            FileOutputStream fos = new FileOutputStream(reportsFolderPath + Constants.ZIP_FILE_EXTENSION);
-            ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(reportsFolderPath + Constants.ZIP_FILE_EXTENSION));
-            File fileToZip = new File(reportsFolderPath);
-
-            FileHandler.zipFile(fileToZip, fileToZip.getName(), zipOut);
-            zipOut.close();
-            fos.close();
+            if (new File(Constants.REPORTS_FOLDER_PATH).exists() || new File(Constants.REPORTS_FOLDER_PATH).mkdir()) {
+                String reportsFolderPath = Constants.REPORTS_FOLDER_PATH + File.separator + Constants.DEPENDENCY_CHECK_REPORTS_FOLDER;
+                FileHandler.findFilesAndMoveToFolder(MainScanner.getProductPath(), reportsFolderPath, Constants.DEPENDENCY_CHECK_REPORT);
+            }
         } catch (IOException | MavenInvocationException e) {
             e.printStackTrace();
             LOGGER.error(e.getMessage());

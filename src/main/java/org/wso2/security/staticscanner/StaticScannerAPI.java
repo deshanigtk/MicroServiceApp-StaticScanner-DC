@@ -62,8 +62,8 @@ public class StaticScannerAPI {
 
     @RequestMapping(value = "getReport", method = RequestMethod.GET, produces = "application/octet-stream")
     @ResponseBody
-    public HttpResponse getReport(HttpServletResponse response, @RequestParam boolean dependencyCheckReport) {
-        return staticScannerService.getReport(response, dependencyCheckReport);
+    public HttpResponse getReport(HttpServletResponse response) {
+        return staticScannerService.getReport(response);
     }
 }
 
