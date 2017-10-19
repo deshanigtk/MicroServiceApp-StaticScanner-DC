@@ -1,7 +1,6 @@
 package org.wso2.security.staticscanner.handlers;
 
 import org.apache.maven.shared.invoker.*;
-import org.wso2.security.staticscanner.Constants;
 import org.wso2.security.staticscanner.scanners.MainScanner;
 
 import java.io.File;

@@ -30,8 +30,6 @@ import java.io.*;
 import java.util.Observer;
 import java.util.zip.ZipOutputStream;
 
-import static org.wso2.security.staticscanner.scanners.MainScanner.getProductPath;
-
 @Service
 public class StaticScannerService {
 
@@ -85,13 +83,16 @@ public class StaticScannerService {
                 }
             }
             try {
-                FileOutputStream fos = new FileOutputStream(Constants.REPORTS_FOLDER_PATH + File.separator + Constants.ZIP_FILE_EXTENSION);
-                ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(Constants.REPORTS_FOLDER_PATH + File.separator + Constants.ZIP_FILE_EXTENSION));
+                FileOutputStream fos = new FileOutputStream(Constants.REPORTS_FOLDER_PATH + Constants.ZIP_FILE_EXTENSION);
+                ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(Constants.REPORTS_FOLDER_PATH + Constants.ZIP_FILE_EXTENSION));
                 File fileToZip = new File(Constants.REPORTS_FOLDER_PATH);
 
                 FileHandler.zipFile(fileToZip, fileToZip.getName(), zipOut);
                 zipOut.close();
                 fos.close();
+
+                LOGGER.info("Report zip file ready");
+                NotificationManager.notifyReportReady(true);
             } catch (IOException e) {
                 e.printStackTrace();
                 LOGGER.error(e.getMessage());

@@ -34,6 +34,7 @@ public class NotificationManager {
     private final static String FIND_SEC_BUGS_STATUS = NOTIFY + "/findSecBugsStatus";
     private final static String FIND_SEC_BUGS_REPORT_READY = NOTIFY + "/findSecBugsReportReady";
     private final static String DEPENDENCY_CHECK_REPORT_READY = NOTIFY + "/dependencyCheckReportReady";
+    private final static String REPORT_READY = NOTIFY + "/reportReady";
 
     private static String myContainerId;
     private static String automationManagerHost;
@@ -102,6 +103,10 @@ public class NotificationManager {
 
     public static void notifyDependencyCheckReportReady(boolean status) {
         notifyStatus(DEPENDENCY_CHECK_REPORT_READY, status);
+    }
+
+    public static void notifyReportReady(boolean status) {
+        notifyStatus(REPORT_READY, status);
     }
 
     public static boolean isConfigured() {
