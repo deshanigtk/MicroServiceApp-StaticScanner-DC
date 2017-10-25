@@ -38,26 +38,26 @@ public class FileHandler {
 
     public static void findFilesAndMoveToFolder(String sourcePath, String destinationPath, String fileName) throws IOException {
         File dir = new File(destinationPath);
-        dir.mkdir();
+        if (dir.mkdir()) {
 
-        Files.find(Paths.get(sourcePath),
-                Integer.MAX_VALUE,
-                (filePath, fileAttr) -> filePath.getFileName().toString().equals(fileName)).forEach((f) -> {
-            try {
-                File file = f.toFile();
+            Files.find(Paths.get(sourcePath),
+                    Integer.MAX_VALUE,
+                    (filePath, fileAttr) -> filePath.getFileName().toString().equals(fileName)).forEach((f) -> {
+                try {
+                    File file = f.toFile();
 
-                String newFileName = file.getAbsolutePath().replace(sourcePath, Constants.NULL_STRING).replace(File.separator, Constants.UNDERSCORE);
-                File newFile = new File(destinationPath + File.separator + newFileName);
+                    String newFileName = file.getAbsolutePath().replace(sourcePath, Constants.NULL_STRING).replace(File.separator, Constants.UNDERSCORE);
+                    File newFile = new File(destinationPath + File.separator + newFileName);
 
-                file.renameTo(newFile);
-                FileUtils.copyFileToDirectory(newFile, dir);
+                    file.renameTo(newFile);
+                    FileUtils.copyFileToDirectory(newFile, dir);
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-        });
-
+            });
+        }
     }
 
     public static void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
@@ -140,7 +140,7 @@ public class FileHandler {
         return null;
     }
 
-    private static boolean uploadFile(MultipartFile file, String filePath) {
+    public static boolean uploadFile(MultipartFile file, String filePath) {
         try {
             byte[] bytes = file.getBytes();
             BufferedOutputStream stream =
@@ -154,24 +154,6 @@ public class FileHandler {
 
         } catch (IOException e) {
             LOGGER.error("File is not uploaded" + e.toString());
-        }
-        return false;
-    }
-
-    public static boolean uploadProductZipAndExtract(MultipartFile zipFile) {
-        boolean isProductPathCreated = new File(Constants.DEFAULT_PRODUCT_PATH).exists() || new File(Constants.DEFAULT_PRODUCT_PATH).mkdir();
-        String fileName = zipFile.getOriginalFilename();
-
-        if (isProductPathCreated) {
-            String fileUploadPath = Constants.DEFAULT_PRODUCT_PATH + File.separator + fileName;
-            if (FileHandler.uploadFile(zipFile, fileUploadPath)) {
-                String folderName = FileHandler.extractZipFile(Constants.DEFAULT_PRODUCT_PATH + File.separator + fileName);
-                if (folderName != null) {
-                    MainScanner.setProductPath(Constants.DEFAULT_PRODUCT_PATH + File.separator + folderName);
-                    LOGGER.info("New product path: " + MainScanner.getProductPath());
-                    return true;
-                }
-            }
         }
         return false;
     }

@@ -33,6 +33,9 @@ import java.util.zip.ZipOutputStream;
 @Service
 public class StaticScannerService {
 
+    private boolean isFindSecBugsSuccess;
+    private boolean isDependencyCheckSuccess;
+
     private final Logger LOGGER = LoggerFactory.getLogger(StaticScannerService.class);
 
 
@@ -43,16 +46,27 @@ public class StaticScannerService {
         return NotificationManager.isConfigured();
     }
 
-
     public String startScan(String automationManagerHost, int automationManagerPort, String containerId, boolean isFileUpload,
                             MultipartFile zipFile, String url, String branch, String tag, boolean isFindSecBugs, boolean isDependencyCheck) {
+
+        String zipFileName = null;
 
         if (!configureNotificationManager(automationManagerHost, automationManagerPort, containerId)) {
             return "Notification manager is not configured";
         }
         if (isFileUpload) {
             if (zipFile == null || !zipFile.getOriginalFilename().endsWith(".zip")) {
-                return "Please upload a zip File";
+                return "Please upload a zip file";
+            } else {
+                zipFileName = zipFile.getOriginalFilename();
+                if (new File(Constants.DEFAULT_PRODUCT_PATH).exists() || new File(Constants.DEFAULT_PRODUCT_PATH).mkdir()) {
+                    String fileUploadPath = Constants.DEFAULT_PRODUCT_PATH + File.separator + zipFileName;
+                    if (FileHandler.uploadFile(zipFile, fileUploadPath)) {
+                        LOGGER.info("File successfully uploaded");
+                    } else {
+                        return "Error occurred while uploading zip file";
+                    }
+                }
             }
         } else {
             if (url == null || branch == null) {
@@ -62,11 +76,14 @@ public class StaticScannerService {
         if (!isFindSecBugs && !isDependencyCheck) {
             return "Please enter a scan to process";
         }
+        if (zipFile != null) {
 
+        }
         Observer mainScannerObserver = (o, arg) -> {
             if (isFindSecBugs) {
                 if (new File(Constants.REPORTS_FOLDER_PATH + File.separator + Constants.FIND_SEC_BUGS_REPORTS_FOLDER).exists()) {
                     LOGGER.info("FindSecBugs scanning completed");
+                    isFindSecBugsSuccess = true;
                     NotificationManager.notifyFindSecBugsStatus("completed");
                     NotificationManager.notifyFindSecBugsReportReady(true);
                 } else {
@@ -76,6 +93,7 @@ public class StaticScannerService {
             if (isDependencyCheck) {
                 if (new File(Constants.REPORTS_FOLDER_PATH + File.separator + Constants.DEPENDENCY_CHECK_REPORTS_FOLDER).exists()) {
                     LOGGER.info("Successfully completed Dependency Check Scan");
+                    isDependencyCheckSuccess = true;
                     NotificationManager.notifyDependencyCheckStatus("completed");
                     NotificationManager.notifyDependencyCheckReportReady(true);
                 } else {
@@ -83,23 +101,25 @@ public class StaticScannerService {
                 }
             }
             try {
-                FileOutputStream fos = new FileOutputStream(Constants.REPORTS_FOLDER_PATH + Constants.ZIP_FILE_EXTENSION);
-                ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(Constants.REPORTS_FOLDER_PATH + Constants.ZIP_FILE_EXTENSION));
-                File fileToZip = new File(Constants.REPORTS_FOLDER_PATH);
+                if (isFindSecBugsSuccess || isDependencyCheckSuccess) {
+                    FileOutputStream fos = new FileOutputStream(Constants.REPORTS_FOLDER_PATH + Constants.ZIP_FILE_EXTENSION);
+                    ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(Constants.REPORTS_FOLDER_PATH + Constants.ZIP_FILE_EXTENSION));
+                    File fileToZip = new File(Constants.REPORTS_FOLDER_PATH);
 
-                FileHandler.zipFile(fileToZip, fileToZip.getName(), zipOut);
-                zipOut.close();
-                fos.close();
+                    FileHandler.zipFile(fileToZip, fileToZip.getName(), zipOut);
+                    zipOut.close();
+                    fos.close();
 
-                LOGGER.info("Report zip file ready");
-                NotificationManager.notifyReportReady(true);
+                    LOGGER.info("Report zip file ready");
+                    NotificationManager.notifyReportReady(true);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
                 LOGGER.error(e.getMessage());
             }
         };
 
-        MainScanner mainScanner = new MainScanner(isFileUpload, zipFile, url, branch, tag, isFindSecBugs, isDependencyCheck);
+        MainScanner mainScanner = new MainScanner(isFileUpload, zipFileName, url, branch, tag, isFindSecBugs, isDependencyCheck);
         mainScanner.addObserver(mainScannerObserver);
         new Thread(mainScanner).start();
         return "Ok";

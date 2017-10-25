@@ -18,18 +18,18 @@ package org.wso2.security.staticscanner.scanners;/*
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.multipart.MultipartFile;
 import org.wso2.security.staticscanner.Constants;
 import org.wso2.security.staticscanner.NotificationManager;
 import org.wso2.security.staticscanner.handlers.FileHandler;
 import org.wso2.security.staticscanner.handlers.GitHandler;
 
+import java.io.File;
 import java.util.Observable;
 
 public class MainScanner extends Observable implements Runnable {
 
     private boolean isFileUpload;
-    private MultipartFile zipFile;
+    private String zipFileName;
     private String url;
     private String branch;
     private String tag;
@@ -47,9 +47,9 @@ public class MainScanner extends Observable implements Runnable {
         notifyObservers(true);
     }
 
-    public MainScanner(boolean isFileUpload, MultipartFile zipFile, String url, String branch, String tag, boolean isFindSecBugs, boolean isDependencyCheck) {
+    public MainScanner(boolean isFileUpload, String zipFileName, String url, String branch, String tag, boolean isFindSecBugs, boolean isDependencyCheck) {
         this.isFileUpload = isFileUpload;
-        this.zipFile = zipFile;
+        this.zipFileName = zipFileName;
         this.url = url;
         this.branch = branch;
         this.tag = tag;
@@ -58,9 +58,14 @@ public class MainScanner extends Observable implements Runnable {
     }
 
     private void startScan() {
-        boolean isProductAvailable;
+        boolean isProductAvailable = false;
         if (isFileUpload) {
-            isProductAvailable = FileHandler.uploadProductZipAndExtract(zipFile);
+            String folderName = FileHandler.extractZipFile(Constants.DEFAULT_PRODUCT_PATH + File.separator + zipFileName);
+            if (folderName != null) {
+                MainScanner.setProductPath(Constants.DEFAULT_PRODUCT_PATH + File.separator + folderName);
+                LOGGER.info("New product path: " + MainScanner.getProductPath());
+                isProductAvailable = true;
+            }
             if (isProductAvailable) {
                 NotificationManager.notifyFileExtracted(true);
                 LOGGER.info("Product is successfully uploaded and extracted");
