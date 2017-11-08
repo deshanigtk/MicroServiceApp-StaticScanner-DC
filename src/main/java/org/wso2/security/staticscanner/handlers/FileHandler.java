@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 import org.wso2.security.staticscanner.Constants;
-import org.wso2.security.staticscanner.scanners.MainScanner;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -36,50 +35,58 @@ public class FileHandler {
     private final static Logger LOGGER = LoggerFactory.getLogger(FileHandler.class);
 
 
-    public static void findFilesAndMoveToFolder(String sourcePath, String destinationPath, String fileName) throws IOException {
-        File dir = new File(destinationPath);
-        if (dir.mkdir()) {
+    public static void findFilesAndMoveToFolder(String sourcePath, String destinationPath, String fileName){
+        try {
+            File dir = new File(destinationPath);
+            if (dir.mkdir()) {
 
-            Files.find(Paths.get(sourcePath),
-                    Integer.MAX_VALUE,
-                    (filePath, fileAttr) -> filePath.getFileName().toString().equals(fileName)).forEach((f) -> {
-                try {
+                Files.find(Paths.get(sourcePath),
+                        Integer.MAX_VALUE,
+                        (filePath, fileAttr) -> filePath.getFileName().toString().equals(fileName)).forEach((f) -> {
+
                     File file = f.toFile();
 
                     String newFileName = file.getAbsolutePath().replace(sourcePath, Constants.NULL_STRING).replace(File.separator, Constants.UNDERSCORE);
                     File newFile = new File(destinationPath + File.separator + newFileName);
 
                     file.renameTo(newFile);
-                    FileUtils.copyFileToDirectory(newFile, dir);
+                    try {
+                        FileUtils.copyFileToDirectory(newFile, dir);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            });
+                });
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    public static void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
-        if (fileToZip.isHidden()) {
-            return;
-        }
-        if (fileToZip.isDirectory()) {
-            File[] children = fileToZip.listFiles();
-            for (File childFile : children) {
-                zipFile(childFile, fileName + File.separator + childFile.getName(), zipOut);
+    public static void zipFolder(File fileToZip, String fileName, ZipOutputStream zipOut) {
+        try {
+            if (fileToZip.isHidden()) {
+                return;
             }
-            return;
+            if (fileToZip.isDirectory()) {
+                File[] children = fileToZip.listFiles();
+                for (File childFile : children) {
+                    zipFolder(childFile, fileName + File.separator + childFile.getName(), zipOut);
+                }
+                return;
+            }
+            FileInputStream fis = new FileInputStream(fileToZip);
+            ZipEntry zipEntry = new ZipEntry(fileName);
+            zipOut.putNextEntry(zipEntry);
+            byte[] bytes = new byte[1024];
+            int length;
+            while ((length = fis.read(bytes)) >= 0) {
+                zipOut.write(bytes, 0, length);
+            }
+            fis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        FileInputStream fis = new FileInputStream(fileToZip);
-        ZipEntry zipEntry = new ZipEntry(fileName);
-        zipOut.putNextEntry(zipEntry);
-        byte[] bytes = new byte[1024];
-        int length;
-        while ((length = fis.read(bytes)) >= 0) {
-            zipOut.write(bytes, 0, length);
-        }
-        fis.close();
 
     }
 
@@ -132,7 +139,7 @@ public class FileHandler {
                     extractZipFile(destFile.getAbsolutePath());
                 }
             }
-            //FileUtils.deleteDirectory(new File(zipFile));
+            //FileUtils.deleteDirectory(new File(zipFolder));
             return fileName.substring(0, fileName.length() - 4);
         } catch (IOException e) {
             e.printStackTrace();

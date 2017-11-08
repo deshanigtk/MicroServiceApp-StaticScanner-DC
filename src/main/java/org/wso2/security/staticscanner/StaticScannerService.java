@@ -50,7 +50,6 @@ public class StaticScannerService {
                             MultipartFile zipFile, String url, String branch, String tag, boolean isFindSecBugs, boolean isDependencyCheck) {
 
         String zipFileName = null;
-
         if (!configureNotificationManager(automationManagerHost, automationManagerPort, containerId)) {
             return "Notification manager is not configured";
         }
@@ -106,7 +105,7 @@ public class StaticScannerService {
                     ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(Constants.REPORTS_FOLDER_PATH + Constants.ZIP_FILE_EXTENSION));
                     File fileToZip = new File(Constants.REPORTS_FOLDER_PATH);
 
-                    FileHandler.zipFile(fileToZip, fileToZip.getName(), zipOut);
+                    FileHandler.zipFolder(fileToZip, fileToZip.getName(), zipOut);
                     zipOut.close();
                     fos.close();
 

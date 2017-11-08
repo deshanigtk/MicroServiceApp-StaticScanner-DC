@@ -47,7 +47,7 @@ public class DependencyCheckScanner {
                 String reportsFolderPath = Constants.REPORTS_FOLDER_PATH + File.separator + Constants.DEPENDENCY_CHECK_REPORTS_FOLDER;
                 FileHandler.findFilesAndMoveToFolder(MainScanner.getProductPath(), reportsFolderPath, Constants.DEPENDENCY_CHECK_REPORT);
             }
-        } catch (IOException | MavenInvocationException e) {
+        } catch (MavenInvocationException e) {
             e.printStackTrace();
             LOGGER.error(e.getMessage());
             NotificationManager.notifyDependencyCheckStatus("failed");

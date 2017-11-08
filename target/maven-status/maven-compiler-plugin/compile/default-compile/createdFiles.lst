@@ -8,6 +8,7 @@ org/wso2/security/staticscanner/scanners/MainScanner.class
 org/wso2/security/staticscanner/StaticScannerService.class
 org/wso2/security/staticscanner/App.class
 org/wso2/security/staticscanner/handlers/MavenHandler.class
+org/wso2/security/staticscanner/tests/StaticScannerServiceTest.class
 org/wso2/security/staticscanner/handlers/XMLHandler.class
 org/wso2/security/staticscanner/scanners/FindSecBugsScanner.class
 org/wso2/security/staticscanner/NotificationManager.class
