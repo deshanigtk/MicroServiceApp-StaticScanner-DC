@@ -16,11 +16,13 @@ package org.wso2.security.staticscanner;/*
 * under the License.
 */
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wso2.security.staticscanner.handlers.HttpRequestHandler;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -61,7 +63,14 @@ public class NotificationManager {
                     .addParameter("containerId", myContainerId)
                     .addParameter("status", String.valueOf(status))
                     .build();
-            HttpRequestHandler.sendGetRequest(uri);
+            LOGGER.info("Notifying status: " + uri);
+            HttpClient httpClient = HttpClientBuilder.create().build();
+            HttpGet get = new HttpGet(uri);
+
+            HttpResponse response = httpClient.execute(get);
+            if (response != null) {
+                LOGGER.info("Notifying status response: " + response);
+            }
         } catch (URISyntaxException | IOException e) {
             e.printStackTrace();
             LOGGER.error(e.toString());
@@ -74,7 +83,16 @@ public class NotificationManager {
                     .addParameter("containerId", myContainerId)
                     .addParameter("status", status)
                     .build();
-            HttpRequestHandler.sendGetRequest(uri);
+            LOGGER.info("Notifying scan status: " + uri);
+            HttpClient httpClient = HttpClientBuilder.create().build();
+            HttpGet get = new HttpGet(uri);
+
+            HttpResponse response = httpClient.execute(get);
+
+            if (response != null) {
+                LOGGER.info("Notifying scan status response: " + response);
+            }
+
         } catch (URISyntaxException | IOException e) {
             e.printStackTrace();
             LOGGER.error(e.toString());
@@ -90,10 +108,12 @@ public class NotificationManager {
     }
 
     public static void notifyFindSecBugsStatus(String status) {
+        LOGGER.info("Notifying find sec bugs status: " + status);
         notifyScanStatus(FIND_SEC_BUGS_STATUS, status);
     }
 
     public static void notifyDependencyCheckStatus(String status) {
+        LOGGER.info("Notifying dependency check status: " + status);
         notifyScanStatus(DEPENDENCY_CHECK_STATUS, status);
     }
 

@@ -34,7 +34,7 @@ public final class Constants {
     public static final String UNDERSCORE = "_";
     public static final String NULL_STRING = "";
 
-    public static final String DEFAULT_PRODUCT_PATH = "/home/deshani/Documents/Productoo";
-    public static final String REPORTS_FOLDER_PATH = "/home/deshani/Documents/Reports";
+    public static final String DEFAULT_PRODUCT_PATH = "/home/deshani/Documents/ProductQQ";
+    public static final String REPORTS_FOLDER_PATH = "/home/deshani/Documents/ReportsQQ";
 
 }
