@@ -16,7 +16,6 @@ package org.wso2.security.staticscanner;/*
 * under the License.
 */
 
-import org.apache.http.HttpResponse;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,48 +78,45 @@ public class StaticScannerService {
         if (zipFile != null) {
 
         }
-        Observer mainScannerObserver = new Observer() {
-            @Override
-            public void update(Observable o, Object arg) {
-                if (isFindSecBugs) {
-                    if (new File(Constants.REPORTS_FOLDER_PATH + File.separator + Constants.FIND_SEC_BUGS_REPORTS_FOLDER).exists()) {
-                        LOGGER.info("FindSecBugs scanning completed");
-                        isFindSecBugsSuccess = true;
-                        NotificationManager.notifyFindSecBugsStatus("completed");
-                        NotificationManager.notifyFindSecBugsReportReady(true);
-                    } else {
-                        LOGGER.error("FindSecBugs scan failed");
-                    }
+        Observer mainScannerObserver = (o, arg) -> {
+            if (isFindSecBugs) {
+                if (new File(Constants.REPORTS_FOLDER_PATH + File.separator + Constants.FIND_SEC_BUGS_REPORTS_FOLDER).exists()) {
+                    LOGGER.info("FindSecBugs scanning completed");
+                    isFindSecBugsSuccess = true;
+                    NotificationManager.notifyFindSecBugsStatus("completed");
+                    NotificationManager.notifyFindSecBugsReportReady(true);
+                } else {
+                    LOGGER.error("FindSecBugs scan failed");
                 }
-                if (isDependencyCheck) {
-                    if (new File(Constants.REPORTS_FOLDER_PATH + File.separator + Constants.DEPENDENCY_CHECK_REPORTS_FOLDER).exists()) {
-                        LOGGER.info("Successfully completed Dependency Check Scan");
-                        isDependencyCheckSuccess = true;
-                        NotificationManager.notifyDependencyCheckStatus("completed");
-                        NotificationManager.notifyDependencyCheckReportReady(true);
+            }
+            if (isDependencyCheck) {
+                if (new File(Constants.REPORTS_FOLDER_PATH + File.separator + Constants.DEPENDENCY_CHECK_REPORTS_FOLDER).exists()) {
+                    LOGGER.info("Successfully completed Dependency Check Scan");
+                    isDependencyCheckSuccess = true;
+                    NotificationManager.notifyDependencyCheckStatus("completed");
+                    NotificationManager.notifyDependencyCheckReportReady(true);
 
-                    } else {
-                        LOGGER.error("Dependency Check scan failed");
-                    }
+                } else {
+                    LOGGER.error("Dependency Check scan failed");
                 }
-                try {
-                    if (isFindSecBugsSuccess || isDependencyCheckSuccess) {
-                        LOGGER.info("Zipping the reports folder");
-                        FileOutputStream fos = new FileOutputStream(Constants.REPORTS_FOLDER_PATH + Constants.ZIP_FILE_EXTENSION);
-                        ZipOutputStream zipOut = new ZipOutputStream(fos);
-                        File fileToZip = new File(Constants.REPORTS_FOLDER_PATH);
+            }
+            try {
+                if (isFindSecBugsSuccess || isDependencyCheckSuccess) {
+                    LOGGER.info("Zipping the reports folder");
+                    FileOutputStream fos = new FileOutputStream(Constants.REPORTS_FOLDER_PATH + Constants.ZIP_FILE_EXTENSION);
+                    ZipOutputStream zipOut = new ZipOutputStream(fos);
+                    File fileToZip = new File(Constants.REPORTS_FOLDER_PATH);
 
-                        FileHandler.zipFolder(fileToZip, fileToZip.getName(), zipOut);
-                        zipOut.close();
-                        fos.close();
+                    FileHandler.zipFolder(fileToZip, fileToZip.getName(), zipOut);
+                    zipOut.close();
+                    fos.close();
 
-                        LOGGER.info("Report zip file ready");
-                        NotificationManager.notifyReportReady(true);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    LOGGER.error(e.getMessage());
+                    LOGGER.info("Report zip file ready");
+                    NotificationManager.notifyReportReady(true);
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
+                LOGGER.error(e.getMessage());
             }
         };
 
@@ -130,7 +126,7 @@ public class StaticScannerService {
         return "Ok";
     }
 
-    public HttpResponse getReport(HttpServletResponse response) {
+    public void getReport(HttpServletResponse response) {
         String reportsPath = Constants.REPORTS_FOLDER_PATH + Constants.ZIP_FILE_EXTENSION;
 
         if (new File(reportsPath).exists()) {
@@ -140,8 +136,6 @@ public class StaticScannerService {
                 response.flushBuffer();
                 LOGGER.info("Successfully written to output stream");
 
-                return (HttpResponse) response;
-
             } catch (IOException e) {
                 e.printStackTrace();
                 LOGGER.error(e.toString());
@@ -149,6 +143,5 @@ public class StaticScannerService {
         } else {
             LOGGER.error("Report is not found");
         }
-        return null;
     }
 }
