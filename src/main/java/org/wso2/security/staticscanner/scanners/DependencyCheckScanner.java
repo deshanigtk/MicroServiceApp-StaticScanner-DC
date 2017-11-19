@@ -39,7 +39,7 @@ public class DependencyCheckScanner {
         try {
 
             LOGGER.info("Dependency Check started");
-            NotificationManager.notifyDependencyCheckStatus("running");
+            NotificationManager.notifyScanStatus("running");
 
             MavenHandler.runMavenCommand(MainScanner.getProductPath() + File.separator + Constants.POM_FILE, MVN_COMMAND_DEPENDENCY_CHECK);
 
@@ -50,7 +50,7 @@ public class DependencyCheckScanner {
         } catch (MavenInvocationException e) {
             e.printStackTrace();
             LOGGER.error(e.getMessage());
-            NotificationManager.notifyDependencyCheckStatus("failed");
+            NotificationManager.notifyScanStatus("failed");
         }
     }
 }

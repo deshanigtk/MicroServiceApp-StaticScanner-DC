@@ -1,7 +1,6 @@
 org/wso2/security/staticscanner/StaticScannerAPI.class
 org/wso2/security/staticscanner/handlers/GitHandler.class
 org/wso2/security/staticscanner/scanners/DependencyCheckScanner.class
-org/wso2/security/staticscanner/StaticScannerService$1.class
 org/wso2/security/staticscanner/handlers/FileHandler.class
 org/wso2/security/staticscanner/Constants.class
 org/wso2/security/staticscanner/scanners/MainScanner.class
