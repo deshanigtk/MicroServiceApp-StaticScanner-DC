@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.wso2.security.tools.dependencycheck.scanner.Constants;
 import org.wso2.security.tools.dependencycheck.scanner.NotificationManager;
+import org.wso2.security.tools.dependencycheck.scanner.config.ScannerProperties;
 import org.wso2.security.tools.dependencycheck.scanner.exception.DependencyCheckScannerException;
 import org.wso2.security.tools.dependencycheck.scanner.exception.NotificationManagerException;
 import org.wso2.security.tools.dependencycheck.scanner.handler.FileHandler;
@@ -74,7 +75,7 @@ public class DependencyCheckScannerService {
             DependencyCheckScannerException {
 
         String zipFileName = null;
-        File productFolder = new File(Constants.DEFAULT_PRODUCT_PATH);
+        File productFolder = new File(ScannerProperties.getDefaultProductFolderPath());
         try {
             validate(automationManagerHost, automationManagerPort, containerId, isFileUpload, zipFile, gitUrl);
             if (isFileUpload) {
@@ -88,7 +89,7 @@ public class DependencyCheckScannerService {
                 }
             } else {
                 try {
-                    GitHandler.gitClone(gitUrl, gitUsername, gitPassword, Constants.DEFAULT_PRODUCT_PATH);
+                    GitHandler.gitClone(gitUrl, gitUsername, gitPassword, ScannerProperties.getDefaultProductFolderPath());
                     NotificationManager.notifyProductCloned(true);
                 } catch (GitAPIException e) {
                     NotificationManager.notifyProductCloned(false);
@@ -126,7 +127,7 @@ public class DependencyCheckScannerService {
             NotificationManagerException {
         String zipFileName = zipFile.getOriginalFilename();
         if (productFolder.exists() || productFolder.mkdir()) {
-            String fileUploadPath = Constants.DEFAULT_PRODUCT_PATH + File.separator + zipFileName;
+            String fileUploadPath = ScannerProperties.getDefaultProductFolderPath()+ File.separator + zipFileName;
             FileHandler.uploadFile(zipFile, fileUploadPath);
             LOGGER.info("File successfully uploaded");
             NotificationManager.notifyFileUploaded(true);
@@ -136,10 +137,9 @@ public class DependencyCheckScannerService {
     private Observer observe() {
         return (o, arg) -> {
             try {
-                if (new File(Constants.REPORTS_FOLDER_PATH + File.separator + Constants.DEPENDENCY_CHECK_REPORTS_FOLDER)
-                        .exists()) {
-                    File fileToZip = new File(Constants.REPORTS_FOLDER_PATH);
-                    String destinationZipFilePath = Constants.REPORTS_FOLDER_PATH + Constants.ZIP_FILE_EXTENSION;
+                if (new File(ScannerProperties.getReportsFolderPath()).exists()) {
+                    File fileToZip = new File(ScannerProperties.getReportsFolderPath());
+                    String destinationZipFilePath = ScannerProperties.getReportsFolderPath() + Constants.ZIP_FILE_EXTENSION;
                     try {
                         FileHandler.zipFolder(fileToZip, fileToZip.getName(), destinationZipFilePath);
                     } catch (IOException e) {
@@ -162,7 +162,7 @@ public class DependencyCheckScannerService {
      * @throws DependencyCheckScannerException
      */
     public void getReport(HttpServletResponse response) throws DependencyCheckScannerException {
-        String reportsPath = Constants.REPORTS_FOLDER_PATH + Constants.ZIP_FILE_EXTENSION;
+        String reportsPath = ScannerProperties.getReportsFolderPath() + Constants.ZIP_FILE_EXTENSION;
         try {
             InputStream inputStream = new FileInputStream(reportsPath);
             IOUtils.copy(inputStream, response.getOutputStream());

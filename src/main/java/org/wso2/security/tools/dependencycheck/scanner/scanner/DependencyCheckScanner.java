@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.security.tools.dependencycheck.scanner.Constants;
 import org.wso2.security.tools.dependencycheck.scanner.NotificationManager;
+import org.wso2.security.tools.dependencycheck.scanner.config.ScannerProperties;
 import org.wso2.security.tools.dependencycheck.scanner.exception.NotificationManagerException;
 import org.wso2.security.tools.dependencycheck.scanner.handler.FileHandler;
 import org.wso2.security.tools.dependencycheck.scanner.handler.MavenHandler;
@@ -33,9 +34,6 @@ import java.io.IOException;
  * This class provides methods to run DependencyCheck scan
  */
 public class DependencyCheckScanner {
-
-    //Maven Commands
-    private static final String MVN_COMMAND_DEPENDENCY_CHECK = "org.owasp:dependency-check-maven:check";
     private static final Logger LOGGER = LoggerFactory.getLogger(DependencyCheckScanner.class);
 
     /**
@@ -47,16 +45,14 @@ public class DependencyCheckScanner {
      * @throws NotificationManagerException
      */
     public void runScan() throws MavenInvocationException, IOException, NotificationManagerException {
-        File reportsFolder = new File(Constants.REPORTS_FOLDER_PATH);
+        File reportsFolder = new File(ScannerProperties.getReportsFolderPath());
         LOGGER.info("Dependency Check started");
         NotificationManager.notifyScanStatus("running");
         MavenHandler.runMavenCommand(DependencyCheckExecutor.getProductPath() + File.separator + Constants.POM_FILE,
-                MVN_COMMAND_DEPENDENCY_CHECK);
+                ScannerProperties.getDependencyCheckMavenCommand());
         if (reportsFolder.exists() || reportsFolder.mkdir()) {
-            String reportsFolderPath = Constants.REPORTS_FOLDER_PATH + File.separator + Constants
-                    .DEPENDENCY_CHECK_REPORTS_FOLDER;
-            FileHandler.findFilesRenameAndMoveToFolder(DependencyCheckExecutor.getProductPath(), reportsFolderPath,
-                    Constants.DEPENDENCY_CHECK_REPORT);
+            FileHandler.findFilesRenameAndMoveToFolder(DependencyCheckExecutor.getProductPath(), ScannerProperties.getReportsFolderPath(),
+                    ScannerProperties.getDependencyCheckReportFile());
         }
     }
 }

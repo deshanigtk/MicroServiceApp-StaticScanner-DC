@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wso2.security.tools.dependencycheck.scanner.Constants;
 import org.wso2.security.tools.dependencycheck.scanner.NotificationManager;
+import org.wso2.security.tools.dependencycheck.scanner.config.ScannerProperties;
 import org.wso2.security.tools.dependencycheck.scanner.exception.DependencyCheckScannerException;
 import org.wso2.security.tools.dependencycheck.scanner.exception.NotificationManagerException;
 import org.wso2.security.tools.dependencycheck.scanner.handler.FileHandler;
@@ -39,7 +40,7 @@ import java.util.Observable;
  */
 public class DependencyCheckExecutor extends Observable implements Runnable {
 
-    private static String productPath = Constants.DEFAULT_PRODUCT_PATH;
+    private static String productPath = ScannerProperties.getDefaultProductFolderPath();
     private final Logger LOGGER = LoggerFactory.getLogger(DependencyCheckExecutor.class);
     private boolean isFileUpload;
     private String zipFileName;
@@ -99,9 +100,9 @@ public class DependencyCheckExecutor extends Observable implements Runnable {
         if (isFileUpload) {
             String folderName;
             try {
-                folderName = FileHandler.extractZipFile(Constants.DEFAULT_PRODUCT_PATH + File.separator +
+                folderName = FileHandler.extractZipFile(ScannerProperties.getDefaultProductFolderPath()+ File.separator +
                         zipFileName);
-                DependencyCheckExecutor.setProductPath(Constants.DEFAULT_PRODUCT_PATH + File.separator + folderName);
+                DependencyCheckExecutor.setProductPath(ScannerProperties.getDefaultProductFolderPath() + File.separator + folderName);
                 isProductAvailable = true;
                 LOGGER.info("File successfully extracted");
                 NotificationManager.notifyFileExtracted(true);
@@ -110,11 +111,11 @@ public class DependencyCheckExecutor extends Observable implements Runnable {
                 throw new DependencyCheckScannerException("Error occurred while extracting zip file", e);
             }
         } else {
-            File productFile = new File(Constants.DEFAULT_PRODUCT_PATH);
+            File productFile = new File(ScannerProperties.getDefaultProductFolderPath());
             Git git;
             if (productFile.exists() || productFile.mkdir()) {
                 try {
-                    git = GitHandler.gitClone(gitUrl, gitUsername, gitPassword, Constants.DEFAULT_PRODUCT_PATH);
+                    git = GitHandler.gitClone(gitUrl, gitUsername, gitPassword, ScannerProperties.getDefaultProductFolderPath());
                     isProductAvailable = GitHandler.hasAtLeastOneReference(git.getRepository());
                     LOGGER.info("File successfully cloned");
                     NotificationManager.notifyProductCloned(true);
@@ -128,7 +129,7 @@ public class DependencyCheckExecutor extends Observable implements Runnable {
             DependencyCheckScanner dependencyCheckScanner = new DependencyCheckScanner();
             try {
                 dependencyCheckScanner.runScan();
-                LOGGER.info("FindSecBugs scan completed");
+                LOGGER.info("Dependency Check scan completed");
                 NotificationManager.notifyScanStatus("completed");
             } catch (MavenInvocationException | IOException e) {
                 NotificationManager.notifyScanStatus("failed");

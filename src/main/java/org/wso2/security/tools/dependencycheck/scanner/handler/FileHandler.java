@@ -149,6 +149,7 @@ public class FileHandler {
                 extractZipFile(destFile.getAbsolutePath());
             }
         }
+        zip.close();
         return fileName.substring(0, fileName.length() - 4);
     }
 

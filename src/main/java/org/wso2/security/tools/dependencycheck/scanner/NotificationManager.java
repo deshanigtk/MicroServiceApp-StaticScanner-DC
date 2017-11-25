@@ -25,6 +25,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wso2.security.tools.dependencycheck.scanner.config.ScannerProperties;
 import org.wso2.security.tools.dependencycheck.scanner.exception.NotificationManagerException;
 
 import java.io.IOException;
@@ -35,13 +36,6 @@ import java.net.URISyntaxException;
  * The class {@code NotificationManager} is to notify back the status to Automation Manager
  */
 public class NotificationManager {
-
-    private final static String NOTIFY = "automationManager/staticScanner/notify";
-    private final static String FILE_UPLOADED = NOTIFY + "/fileUploaded";
-    private final static String FILE_EXTRACTED = NOTIFY + "/fileExtracted";
-    private final static String PRODUCT_CLONED = NOTIFY + "/productCloned";
-    private final static String SCAN_STATUS = NOTIFY + "/scanStatus";
-    private final static String REPORT_READY = NOTIFY + "/reportReady";
     private static final Logger LOGGER = LoggerFactory.getLogger(NotificationManager.class);
     private static String myContainerId;
     private static String automationManagerHost;
@@ -95,7 +89,7 @@ public class NotificationManager {
         while (i < 10) {
             try {
                 URI uri = (new URIBuilder()).setHost(automationManagerHost).setPort(automationManagerPort).setScheme
-                        ("http").setPath(SCAN_STATUS)
+                        ("http").setPath(ScannerProperties.getNotifyScanStatus())
                         .addParameter("containerId", myContainerId)
                         .addParameter("status", status)
                         .build();
@@ -124,7 +118,7 @@ public class NotificationManager {
      */
     public static void notifyFileUploaded(boolean status) throws NotificationManagerException {
         LOGGER.trace("Notifying file uploaded");
-        notifyStatus(FILE_UPLOADED, status);
+        notifyStatus(ScannerProperties.getNotifyFileUploaded(), status);
     }
 
     /**
@@ -134,7 +128,7 @@ public class NotificationManager {
      */
     public static void notifyFileExtracted(boolean status) throws NotificationManagerException {
         LOGGER.trace("Notifying file extracted");
-        notifyStatus(FILE_EXTRACTED, status);
+        notifyStatus(ScannerProperties.getNotifyFileExtracted(), status);
     }
 
     /**
@@ -144,7 +138,7 @@ public class NotificationManager {
      */
     public static void notifyProductCloned(boolean status) throws NotificationManagerException {
         LOGGER.trace("Notifying product cloned");
-        notifyStatus(PRODUCT_CLONED, status);
+        notifyStatus(ScannerProperties.getNotifyProductCloned(), status);
     }
 
     /**
@@ -154,7 +148,7 @@ public class NotificationManager {
      */
     public static void notifyReportReady(boolean status) throws NotificationManagerException {
         LOGGER.trace("Notifying report ready");
-        notifyStatus(REPORT_READY, status);
+        notifyStatus(ScannerProperties.getNotifyReportReady(), status);
     }
 
     /**

@@ -18,18 +18,17 @@
 package org.wso2.security.tools.dependencycheck.scanner.handler;
 
 import org.apache.maven.shared.invoker.*;
+import org.wso2.security.tools.dependencycheck.scanner.config.ScannerProperties;
 import org.wso2.security.tools.dependencycheck.scanner.scanner.DependencyCheckExecutor;
 
 import java.io.File;
 import java.util.Collections;
-import java.util.OptionalInt;
 
 /**
  * Utility methods for handling Maven
  */
 @SuppressWarnings({"unused"})
 public class MavenHandler {
-    private static final String MVN_COMMAND_M2_HOME = "M2_HOME";
 
     /**
      * Execute a maven command
@@ -45,8 +44,7 @@ public class MavenHandler {
         request.setBaseDirectory(new File(DependencyCheckExecutor.getProductPath()));
         request.setGoals(Collections.singletonList(mavenCommand));
         Invoker invoker = new DefaultInvoker();
-        invoker.setMavenHome(new File(System.getenv(MVN_COMMAND_M2_HOME)));
-        InvocationResult result = invoker.execute(request);
-        OptionalInt.of(result.getExitCode());
+        invoker.setMavenHome(new File(System.getenv(ScannerProperties.getMavenM2Home())));
+        invoker.execute(request);
     }
 }

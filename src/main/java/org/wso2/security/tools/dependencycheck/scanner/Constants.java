@@ -21,11 +21,6 @@ package org.wso2.security.tools.dependencycheck.scanner;
  * Defines constants of the application
  */
 public final class Constants {
-
-    //Dependency check reports
-    public static final String DEPENDENCY_CHECK_REPORTS_FOLDER = "Dependency-Check-Reports";
-    public static final String DEPENDENCY_CHECK_REPORT = "dependency-check-report.html";
-
     //Files
     public static final String ZIP_FILE_EXTENSION = ".zip";
     public static final String POM_FILE = "pom.xml";
@@ -33,8 +28,5 @@ public final class Constants {
     //Symbols
     public static final String UNDERSCORE = "_";
     public static final String NULL_STRING = "";
-
-    public static final String DEFAULT_PRODUCT_PATH = "/home/Product";
-    public static final String REPORTS_FOLDER_PATH = "/home/Reports";
 
 }
