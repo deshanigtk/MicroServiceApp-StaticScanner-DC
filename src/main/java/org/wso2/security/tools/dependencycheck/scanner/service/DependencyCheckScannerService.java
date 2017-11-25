@@ -89,7 +89,8 @@ public class DependencyCheckScannerService {
                 }
             } else {
                 try {
-                    GitHandler.gitClone(gitUrl, gitUsername, gitPassword, ScannerProperties.getDefaultProductFolderPath());
+                    GitHandler.gitClone(gitUrl, gitUsername, gitPassword, ScannerProperties
+                            .getDefaultProductFolderPath());
                     NotificationManager.notifyProductCloned(true);
                 } catch (GitAPIException e) {
                     NotificationManager.notifyProductCloned(false);
@@ -127,7 +128,7 @@ public class DependencyCheckScannerService {
             NotificationManagerException {
         String zipFileName = zipFile.getOriginalFilename();
         if (productFolder.exists() || productFolder.mkdir()) {
-            String fileUploadPath = ScannerProperties.getDefaultProductFolderPath()+ File.separator + zipFileName;
+            String fileUploadPath = ScannerProperties.getDefaultProductFolderPath() + File.separator + zipFileName;
             FileHandler.uploadFile(zipFile, fileUploadPath);
             LOGGER.info("File successfully uploaded");
             NotificationManager.notifyFileUploaded(true);
@@ -137,14 +138,7 @@ public class DependencyCheckScannerService {
     private Observer observe() {
         return (o, arg) -> {
             try {
-                if (new File(ScannerProperties.getReportsFolderPath()).exists()) {
-                    File fileToZip = new File(ScannerProperties.getReportsFolderPath());
-                    String destinationZipFilePath = ScannerProperties.getReportsFolderPath() + Constants.ZIP_FILE_EXTENSION;
-                    try {
-                        FileHandler.zipFolder(fileToZip, fileToZip.getName(), destinationZipFilePath);
-                    } catch (IOException e) {
-                        NotificationManager.notifyReportReady(false);
-                    }
+                if (new File(ScannerProperties.getReportsFolderPath() + Constants.ZIP_FILE_EXTENSION).exists()) {
                     NotificationManager.notifyReportReady(true);
                 } else {
                     NotificationManager.notifyReportReady(false);

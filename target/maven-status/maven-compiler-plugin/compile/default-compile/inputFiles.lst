@@ -3,10 +3,11 @@
 /home/deshani/Documents/1.Project/GitCloned/MicroServiceApp-StaticScanner-DC/src/main/java/org/wso2/security/tools/dependencycheck/scanner/exception/NotificationManagerException.java
 /home/deshani/Documents/1.Project/GitCloned/MicroServiceApp-StaticScanner-DC/src/main/java/org/wso2/security/tools/dependencycheck/scanner/controller/DependencyCheckScannerController.java
 /home/deshani/Documents/1.Project/GitCloned/MicroServiceApp-StaticScanner-DC/src/main/java/org/wso2/security/tools/dependencycheck/scanner/handler/GitHandler.java
+/home/deshani/Documents/1.Project/GitCloned/MicroServiceApp-StaticScanner-DC/src/main/java/org/wso2/security/tools/dependencycheck/scanner/config/ScannerProperties.java
+/home/deshani/Documents/1.Project/GitCloned/MicroServiceApp-StaticScanner-DC/src/main/java/org/wso2/security/tools/dependencycheck/scanner/handler/MavenHandler.java
+/home/deshani/Documents/1.Project/GitCloned/MicroServiceApp-StaticScanner-DC/src/main/java/org/wso2/security/tools/dependencycheck/scanner/exception/DependencyCheckScannerException.java
 /home/deshani/Documents/1.Project/GitCloned/MicroServiceApp-StaticScanner-DC/src/main/java/org/wso2/security/tools/dependencycheck/scanner/service/DependencyCheckScannerService.java
 /home/deshani/Documents/1.Project/GitCloned/MicroServiceApp-StaticScanner-DC/src/main/java/org/wso2/security/tools/dependencycheck/scanner/scanner/DependencyCheckExecutor.java
 /home/deshani/Documents/1.Project/GitCloned/MicroServiceApp-StaticScanner-DC/src/main/java/org/wso2/security/tools/dependencycheck/scanner/Constants.java
 /home/deshani/Documents/1.Project/GitCloned/MicroServiceApp-StaticScanner-DC/src/main/java/org/wso2/security/tools/dependencycheck/scanner/NotificationManager.java
-/home/deshani/Documents/1.Project/GitCloned/MicroServiceApp-StaticScanner-DC/src/main/java/org/wso2/security/tools/dependencycheck/scanner/handler/MavenHandler.java
-/home/deshani/Documents/1.Project/GitCloned/MicroServiceApp-StaticScanner-DC/src/main/java/org/wso2/security/tools/dependencycheck/scanner/exception/DependencyCheckScannerException.java
 /home/deshani/Documents/1.Project/GitCloned/MicroServiceApp-StaticScanner-DC/src/main/java/org/wso2/security/tools/dependencycheck/scanner/handler/FileHandler.java

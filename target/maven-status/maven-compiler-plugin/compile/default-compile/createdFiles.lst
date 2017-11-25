@@ -10,3 +10,4 @@ org/wso2/security/tools/dependencycheck/scanner/handler/MavenHandler.class
 org/wso2/security/tools/dependencycheck/scanner/exception/NotificationManagerException.class
 org/wso2/security/tools/dependencycheck/scanner/scanner/DependencyCheckExecutor.class
 org/wso2/security/tools/dependencycheck/scanner/scanner/DependencyCheckScanner.class
+org/wso2/security/tools/dependencycheck/scanner/config/ScannerProperties.class

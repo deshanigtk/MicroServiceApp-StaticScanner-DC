@@ -47,12 +47,19 @@ public class DependencyCheckScanner {
     public void runScan() throws MavenInvocationException, IOException, NotificationManagerException {
         File reportsFolder = new File(ScannerProperties.getReportsFolderPath());
         LOGGER.info("Dependency Check started");
-        NotificationManager.notifyScanStatus("running");
+        NotificationManager.notifyScanStatus(ScannerProperties.getScanStatusRunning());
         MavenHandler.runMavenCommand(DependencyCheckExecutor.getProductPath() + File.separator + Constants.POM_FILE,
                 ScannerProperties.getDependencyCheckMavenCommand());
+
         if (reportsFolder.exists() || reportsFolder.mkdir()) {
-            FileHandler.findFilesRenameAndMoveToFolder(DependencyCheckExecutor.getProductPath(), ScannerProperties.getReportsFolderPath(),
+            String reportsFolderPath = ScannerProperties.getReportsFolderPath() + File.separator + ScannerProperties
+                    .getDependencyCheckReportsFolder();
+            FileHandler.findFilesRenameAndMoveToFolder(DependencyCheckExecutor.getProductPath(), reportsFolderPath,
                     ScannerProperties.getDependencyCheckReportFile());
+
+            File fileToZip = new File(ScannerProperties.getReportsFolderPath());
+            String destinationZipFilePath = ScannerProperties.getReportsFolderPath() + Constants.ZIP_FILE_EXTENSION;
+            FileHandler.zipFolder(fileToZip, fileToZip.getName(), destinationZipFilePath);
         }
     }
 }

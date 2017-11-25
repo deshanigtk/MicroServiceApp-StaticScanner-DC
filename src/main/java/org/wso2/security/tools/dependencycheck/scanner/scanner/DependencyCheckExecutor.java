@@ -130,9 +130,9 @@ public class DependencyCheckExecutor extends Observable implements Runnable {
             try {
                 dependencyCheckScanner.runScan();
                 LOGGER.info("Dependency Check scan completed");
-                NotificationManager.notifyScanStatus("completed");
+                NotificationManager.notifyScanStatus(ScannerProperties.getScanStatusCompleted());
             } catch (MavenInvocationException | IOException e) {
-                NotificationManager.notifyScanStatus("failed");
+                NotificationManager.notifyScanStatus(ScannerProperties.getScanStatusFailed());
                 throw new DependencyCheckScannerException("Error occurred while running the scan", e);
             }
         }
