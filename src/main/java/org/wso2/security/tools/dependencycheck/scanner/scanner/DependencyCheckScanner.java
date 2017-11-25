@@ -1,0 +1,62 @@
+/*
+*  Copyright (c) ${date}, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*
+*  WSO2 Inc. licenses this file to you under the Apache License,
+*  Version 2.0 (the "License"); you may not use this file except
+*  in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*    http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+package org.wso2.security.tools.dependencycheck.scanner.scanner;
+
+import org.apache.maven.shared.invoker.MavenInvocationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wso2.security.tools.dependencycheck.scanner.Constants;
+import org.wso2.security.tools.dependencycheck.scanner.NotificationManager;
+import org.wso2.security.tools.dependencycheck.scanner.exception.NotificationManagerException;
+import org.wso2.security.tools.dependencycheck.scanner.handler.FileHandler;
+import org.wso2.security.tools.dependencycheck.scanner.handler.MavenHandler;
+
+import java.io.File;
+import java.io.IOException;
+
+/**
+ * This class provides methods to run DependencyCheck scan
+ */
+public class DependencyCheckScanner {
+
+    //Maven Commands
+    private static final String MVN_COMMAND_DEPENDENCY_CHECK = "org.owasp:dependency-check-maven:check";
+    private static final Logger LOGGER = LoggerFactory.getLogger(DependencyCheckScanner.class);
+
+    /**
+     * This method is to build the product with Dependency Check Maven command. Then find, rename and replace
+     * the generated reports to a folder
+     *
+     * @throws MavenInvocationException
+     * @throws IOException
+     * @throws NotificationManagerException
+     */
+    public void runScan() throws MavenInvocationException, IOException, NotificationManagerException {
+        File reportsFolder = new File(Constants.REPORTS_FOLDER_PATH);
+        LOGGER.info("Dependency Check started");
+        NotificationManager.notifyScanStatus("running");
+        MavenHandler.runMavenCommand(DependencyCheckExecutor.getProductPath() + File.separator + Constants.POM_FILE,
+                MVN_COMMAND_DEPENDENCY_CHECK);
+        if (reportsFolder.exists() || reportsFolder.mkdir()) {
+            String reportsFolderPath = Constants.REPORTS_FOLDER_PATH + File.separator + Constants
+                    .DEPENDENCY_CHECK_REPORTS_FOLDER;
+            FileHandler.findFilesRenameAndMoveToFolder(DependencyCheckExecutor.getProductPath(), reportsFolderPath,
+                    Constants.DEPENDENCY_CHECK_REPORT);
+        }
+    }
+}

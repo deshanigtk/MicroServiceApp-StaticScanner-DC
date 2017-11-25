@@ -1,4 +1,4 @@
-package org.wso2.security.staticscanner.tests;/*
+/*
 *  Copyright (c) ${date}, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 *  WSO2 Inc. licenses this file to you under the Apache License,
@@ -15,6 +15,7 @@ package org.wso2.security.staticscanner.tests;/*
 * specific language governing permissions and limitations
 * under the License.
 */
+package org.wso2.security.tools.dependencycheck.scanner;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +24,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
-import org.wso2.security.staticscanner.DependencyCheckScannerService;
+import org.wso2.security.tools.dependencycheck.scanner.service.DependencyCheckScannerService;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,7 +36,7 @@ import static org.junit.Assert.assertEquals;
 public class StaticScannerServiceTest {
 
     @Autowired
-    private StaticScannerService staticScannerService;
+    private DependencyCheckScannerService staticScannerService;
 
     @Test
     public void testStartScan() throws Exception {
@@ -43,13 +44,15 @@ public class StaticScannerServiceTest {
         int automationManagerPort = 8080;
         String containerId = "testContainerId";
         boolean isFileUpload = false;
-        MultipartFile zipFile = new MockMultipartFile("file.zip", new FileInputStream(new File("/home/deshani/Documents/wso2is-5.3.0.zip")));
+        MultipartFile zipFile = new MockMultipartFile("file.zip", new FileInputStream(new File
+                ("/home/deshani/Documents/wso2is-5.3.0.zip")));
         String url = "http://github.org/dessi";
         String branch = "master";
         String tag = null;
         boolean isFindSecBugs = true;
         boolean isDependencyCheck = true;
 
-        assertEquals("Ok", staticScannerService.startScan(automationManagerHost, automationManagerPort, containerId, isFileUpload, zipFile, url, branch, tag, isFindSecBugs, isDependencyCheck));
+//        assertEquals("Ok", staticScannerService.startScan(automationManagerHost, automationManagerPort, containerId,
+//                isFileUpload, zipFile, url, branch, tag, isFindSecBugs, isDependencyCheck));
     }
 }
