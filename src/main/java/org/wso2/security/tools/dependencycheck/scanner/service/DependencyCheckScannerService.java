@@ -75,7 +75,6 @@ public class DependencyCheckScannerService {
     public void startScan(String automationManagerHost, int automationManagerPort, String containerId, boolean
             isFileUpload, MultipartFile zipFile, String gitUrl, String gitUsername, String gitPassword) throws
             DependencyCheckScannerException {
-
         String zipFileName = null;
         File productFolder = new File(ScannerProperties.getDefaultProductFolderPath());
         try {

@@ -29,5 +29,4 @@ public final class Constants {
     //Symbols
     public static final String UNDERSCORE = "_";
     public static final String NULL_STRING = "";
-
 }
