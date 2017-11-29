@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="40f81c15-5b53-4a0c-b769-503e6b234624" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/java/org.wso2.security.tools.dependencycheck.scanner/FileHandlerTest.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/java/org.wso2.security.tools.dependencycheck.scanner/StaticScannerServiceTest.java" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/Constants.java" afterPath="$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/Constants.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/service/DependencyCheckScannerService.java" afterPath="$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/service/DependencyCheckScannerService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/handler/GitHandler.java" afterPath="$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/handler/GitHandler.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -31,14 +33,13 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="DependencyCheckScannerService.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/service/DependencyCheckScannerService.java">
+      <file leaf-file-name="DependencyCheckScannerException.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/exception/DependencyCheckScannerException.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="76" column="45" lean-forward="false" selection-start-line="76" selection-start-column="45" selection-end-line="76" selection-end-column="45" />
+            <state relative-caret-position="285">
+              <caret line="27" column="13" lean-forward="false" selection-start-line="27" selection-start-column="13" selection-end-line="27" selection-end-column="13" />
               <folding>
-                <element signature="e#0#8032#0" expanded="true" />
-                <element signature="imports" expanded="true" />
+                <element signature="e#0#1631#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -47,7 +48,7 @@
       <file leaf-file-name="NotificationManager.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/NotificationManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="231">
+            <state relative-caret-position="2556">
               <caret line="142" column="22" lean-forward="false" selection-start-line="142" selection-start-column="22" selection-end-line="142" selection-end-column="22" />
               <folding>
                 <element signature="e#0#6638#0" expanded="true" />
@@ -57,34 +58,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DependencyCheckScannerException.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/exception/DependencyCheckScannerException.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="310">
-              <caret line="27" column="13" lean-forward="false" selection-start-line="27" selection-start-column="13" selection-end-line="27" selection-end-column="13" />
-              <folding>
-                <element signature="e#0#1631#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Constants.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/Constants.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="30" column="48" lean-forward="false" selection-start-line="30" selection-start-column="48" selection-end-line="30" selection-end-column="48" />
-              <folding>
-                <element signature="e#0#1041#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="FileHandler.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/handler/FileHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="247">
+            <state relative-caret-position="468">
               <caret line="36" column="13" lean-forward="false" selection-start-line="36" selection-start-column="13" selection-end-line="36" selection-end-column="13" />
               <folding>
                 <element signature="e#0#6883#0" expanded="true" />
@@ -93,13 +70,25 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="Constants.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/Constants.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="468">
+              <caret line="26" column="52" lean-forward="false" selection-start-line="26" selection-start-column="52" selection-end-line="26" selection-end-column="52" />
+              <folding>
+                <element signature="e#0#1040#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="GitHandler.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/handler/GitHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="247">
-              <caret line="38" column="13" lean-forward="false" selection-start-line="38" selection-start-column="13" selection-end-line="38" selection-end-column="13" />
+            <state relative-caret-position="1624">
+              <caret line="107" column="5" lean-forward="false" selection-start-line="107" selection-start-column="5" selection-end-line="107" selection-end-column="5" />
               <folding>
-                <element signature="e#0#4271#0" expanded="true" />
+                <element signature="e#0#4270#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -108,7 +97,7 @@
       <file leaf-file-name="MavenHandler.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/handler/MavenHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="468">
+            <state relative-caret-position="249">
               <caret line="31" column="13" lean-forward="false" selection-start-line="31" selection-start-column="13" selection-end-line="31" selection-end-column="13" />
               <folding>
                 <element signature="e#0#1979#0" expanded="true" />
@@ -117,13 +106,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="NotificationManagerException.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/exception/NotificationManagerException.java">
+      <file leaf-file-name="App.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/App.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="310">
-              <caret line="25" column="13" lean-forward="false" selection-start-line="25" selection-start-column="13" selection-end-line="25" selection-end-column="13" />
+            <state relative-caret-position="432">
+              <caret line="24" column="13" lean-forward="false" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="13" />
               <folding>
-                <element signature="e#0#1552#0" expanded="true" />
+                <element signature="e#0#1004#0" expanded="true" />
+                <element signature="imports" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -132,7 +122,7 @@
       <file leaf-file-name="DependencyCheckScanner.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/scanner/DependencyCheckScanner.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="501">
+            <state relative-caret-position="1062">
               <caret line="59" column="75" lean-forward="false" selection-start-line="59" selection-start-column="75" selection-end-line="59" selection-end-column="75" />
               <folding>
                 <element signature="e#0#3099#0" expanded="true" />
@@ -142,10 +132,22 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="NotificationManagerException.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/exception/NotificationManagerException.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="285">
+              <caret line="25" column="13" lean-forward="false" selection-start-line="25" selection-start-column="13" selection-end-line="25" selection-end-column="13" />
+              <folding>
+                <element signature="e#0#1552#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="DependencyCheckExecutor.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/scanner/DependencyCheckExecutor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="706">
+            <state relative-caret-position="-813">
               <caret line="40" column="13" lean-forward="false" selection-start-line="40" selection-start-column="13" selection-end-line="40" selection-end-column="13" />
               <folding>
                 <element signature="e#0#6197#0" expanded="true" />
@@ -218,13 +220,13 @@
         <option value="$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/exception/DependencyCheckScannerException.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/exception/NotificationManagerException.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/handler/FileHandler.java" />
-        <option value="$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/handler/GitHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/handler/MavenHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/scanner/DependencyCheckExecutor.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/scanner/DependencyCheckScanner.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/App.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/NotificationManager.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/service/DependencyCheckScannerService.java" />
+        <option value="$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/handler/GitHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/Constants.java" />
       </list>
     </option>
@@ -264,7 +266,19 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="AndroidView" />
+      <pane id="Scratches">
+        <subPane>
+          <expand>
+            <path>
+              <item name="" type="1a2a3e82:ScratchProjectViewPane$MyProjectNode" />
+              <item name="Scratches" type="d62648e6:ScratchProjectViewPane$MyRootNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -359,23 +373,24 @@
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
             </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
-      <pane id="Scratches">
-        <subPane>
-          <expand>
             <path>
-              <item name="" type="1a2a3e82:ScratchProjectViewPane$MyProjectNode" />
-              <item name="Scratches" type="d62648e6:ScratchProjectViewPane$MyRootNode" />
+              <item name="MicroServiceApp-StaticScanner-DC" type="b2602c69:ProjectViewProjectNode" />
+              <item name="MicroServiceApp-StaticScanner-DC" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="MicroServiceApp-StaticScanner-DC" type="b2602c69:ProjectViewProjectNode" />
+              <item name="MicroServiceApp-StaticScanner-DC" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="AndroidView" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -913,7 +928,8 @@
       <workItem from="1511635501424" duration="2741000" />
       <workItem from="1511661451744" duration="1529000" />
       <workItem from="1511886388736" duration="604000" />
-      <workItem from="1511964430134" duration="1419000" />
+      <workItem from="1511964430134" duration="1436000" />
+      <workItem from="1511970659571" duration="260000" />
     </task>
     <task id="LOCAL-00001" summary="removing git comment">
       <created>1501778924100</created>
@@ -1202,7 +1218,14 @@
       <option name="project" value="LOCAL" />
       <updated>1511964927133</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="Changes in formatting">
+      <created>1511970327321</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1511970327321</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1238,7 +1261,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="308756000" />
+    <option name="totallyTimeSpent" value="309033000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1274,7 +1297,7 @@
       <window_info id="Spring" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="CheckStyle" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17311828" sideWeight="0.49811321" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28137094" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28468767" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Bean Validation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32946378" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -1486,20 +1509,6 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/staticscanner/handlers/HttpRequestHandler.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/staticscanner/scanners/FindSecBugsScanner.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/staticscanner/handlers/XMLHandler.java" />
-    <entry file="file://$PROJECT_DIR$/src/test/java/org.wso2.security.tools.dependencycheck.scanner/FileHandlerTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="17" column="56" lean-forward="false" selection-start-line="17" selection-start-column="56" selection-end-line="17" selection-end-column="56" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/org.wso2.security.tools.dependencycheck.scanner/StaticScannerServiceTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="972">
-          <caret line="54" column="21" lean-forward="false" selection-start-line="54" selection-start-column="21" selection-end-line="55" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar:///usr/lib/jvm/java-8-oracle/src.zip!/java/io/File.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="469">
@@ -1518,16 +1527,31 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="54">
           <caret line="3" column="48" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/org.wso2.security.tools.dependencycheck.scanner/StaticScannerServiceTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="468">
+          <caret line="54" column="21" lean-forward="false" selection-start-line="54" selection-start-column="21" selection-end-line="55" selection-end-column="23" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/App.java">
+    <entry file="file://$PROJECT_DIR$/src/test/java/org.wso2.security.tools.dependencycheck.scanner/FileHandlerTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="24" column="13" lean-forward="false" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="13" />
+        <state relative-caret-position="126">
+          <caret line="26" column="13" lean-forward="false" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/service/DependencyCheckScannerService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1083">
+          <caret line="76" column="45" lean-forward="false" selection-start-line="76" selection-start-column="45" selection-end-line="76" selection-end-column="45" />
           <folding>
-            <element signature="e#0#1004#0" expanded="true" />
+            <element signature="e#0#8032#0" expanded="true" />
             <element signature="imports" expanded="true" />
           </folding>
         </state>
@@ -1535,7 +1559,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/config/ScannerProperties.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="501">
+        <state relative-caret-position="-1929">
           <caret line="30" column="13" lean-forward="false" selection-start-line="30" selection-start-column="13" selection-end-line="30" selection-end-column="13" />
           <folding>
             <element signature="e#0#6633#0" expanded="true" />
@@ -1556,7 +1580,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/exception/DependencyCheckScannerException.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="310">
+        <state relative-caret-position="285">
           <caret line="27" column="13" lean-forward="false" selection-start-line="27" selection-start-column="13" selection-end-line="27" selection-end-column="13" />
           <folding>
             <element signature="e#0#1631#0" expanded="true" />
@@ -1566,7 +1590,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/exception/NotificationManagerException.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="310">
+        <state relative-caret-position="285">
           <caret line="25" column="13" lean-forward="false" selection-start-line="25" selection-start-column="13" selection-end-line="25" selection-end-column="13" />
           <folding>
             <element signature="e#0#1552#0" expanded="true" />
@@ -1576,7 +1600,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/handler/FileHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
+        <state relative-caret-position="468">
           <caret line="36" column="13" lean-forward="false" selection-start-line="36" selection-start-column="13" selection-end-line="36" selection-end-column="13" />
           <folding>
             <element signature="e#0#6883#0" expanded="true" />
@@ -1586,17 +1610,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/handler/GitHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="38" column="13" lean-forward="false" selection-start-line="38" selection-start-column="13" selection-end-line="38" selection-end-column="13" />
+        <state relative-caret-position="1624">
+          <caret line="107" column="5" lean-forward="false" selection-start-line="107" selection-start-column="5" selection-end-line="107" selection-end-column="5" />
           <folding>
-            <element signature="e#0#4271#0" expanded="true" />
+            <element signature="e#0#4270#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/handler/MavenHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="468">
+        <state relative-caret-position="249">
           <caret line="31" column="13" lean-forward="false" selection-start-line="31" selection-start-column="13" selection-end-line="31" selection-end-column="13" />
           <folding>
             <element signature="e#0#1979#0" expanded="true" />
@@ -1604,20 +1628,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/scanner/DependencyCheckExecutor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="706">
-          <caret line="40" column="13" lean-forward="false" selection-start-line="40" selection-start-column="13" selection-end-line="40" selection-end-column="13" />
-          <folding>
-            <element signature="e#0#6197#0" expanded="true" />
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/scanner/DependencyCheckScanner.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="501">
+        <state relative-caret-position="1062">
           <caret line="59" column="75" lean-forward="false" selection-start-line="59" selection-start-column="75" selection-end-line="59" selection-end-column="75" />
           <folding>
             <element signature="e#0#3099#0" expanded="true" />
@@ -1626,12 +1639,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/service/DependencyCheckScannerService.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/scanner/DependencyCheckExecutor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="76" column="45" lean-forward="false" selection-start-line="76" selection-start-column="45" selection-end-line="76" selection-end-column="45" />
+        <state relative-caret-position="-813">
+          <caret line="40" column="13" lean-forward="false" selection-start-line="40" selection-start-column="13" selection-end-line="40" selection-end-column="13" />
           <folding>
-            <element signature="e#0#8032#0" expanded="true" />
+            <element signature="e#0#6197#0" expanded="true" />
             <element signature="imports" expanded="true" />
           </folding>
         </state>
@@ -1639,17 +1652,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/Constants.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="30" column="48" lean-forward="false" selection-start-line="30" selection-start-column="48" selection-end-line="30" selection-end-column="48" />
+        <state relative-caret-position="468">
+          <caret line="26" column="52" lean-forward="false" selection-start-line="26" selection-start-column="52" selection-end-line="26" selection-end-column="52" />
           <folding>
-            <element signature="e#0#1041#0" expanded="true" />
+            <element signature="e#0#1040#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/App.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="432">
+          <caret line="24" column="13" lean-forward="false" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="13" />
+          <folding>
+            <element signature="e#0#1004#0" expanded="true" />
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/wso2/security/tools/dependencycheck/scanner/NotificationManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="231">
+        <state relative-caret-position="2556">
           <caret line="142" column="22" lean-forward="false" selection-start-line="142" selection-start-column="22" selection-end-line="142" selection-end-column="22" />
           <folding>
             <element signature="e#0#6638#0" expanded="true" />

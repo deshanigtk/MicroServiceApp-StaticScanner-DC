@@ -106,5 +106,4 @@ public class GitHandler {
     public static Git gitOpen(String productPath) throws IOException {
         return Git.open(new File(productPath));
     }
-
 }
