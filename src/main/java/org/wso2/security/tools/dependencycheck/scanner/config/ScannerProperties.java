@@ -1,5 +1,5 @@
 /*
-*  Copyright (c) ${date}, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*  Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 *  WSO2 Inc. licenses this file to you under the Apache License,
 *  Version 2.0 (the "License"); you may not use this file except
@@ -15,6 +15,7 @@
 * specific language governing permissions and limitations
 * under the License.
 */
+
 package org.wso2.security.tools.dependencycheck.scanner.config;
 
 import org.slf4j.Logger;
@@ -28,6 +29,7 @@ import java.util.Properties;
  * Reads values from scanner.properties file
  */
 public class ScannerProperties {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ScannerProperties.class);
     private static String defaultProductFolderPath;
     private static String dependencyCheckReportFile;
@@ -63,7 +65,6 @@ public class ScannerProperties {
             scanStatusRunning = properties.getProperty("scanner.dependency-check.scan.status.running");
             scanStatusCompleted = properties.getProperty("scanner.dependency-check.scan.status.completed");
             scanStatusFailed = properties.getProperty("scanner.dependency-check.scan.status.failed");
-
         } catch (IOException e) {
             e.printStackTrace();
             LOGGER.error(e.toString());

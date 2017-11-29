@@ -1,5 +1,5 @@
 /*
-*  Copyright (c) ${date}, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*  Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 *  WSO2 Inc. licenses this file to you under the Apache License,
 *  Version 2.0 (the "License"); you may not use this file except
@@ -15,6 +15,7 @@
 * specific language governing permissions and limitations
 * under the License.
 */
+
 package org.wso2.security.tools.dependencycheck.scanner.service;
 
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -44,6 +45,7 @@ import java.util.Observer;
  */
 @Service
 public class DependencyCheckScannerService {
+
     private final Logger LOGGER = LoggerFactory.getLogger(DependencyCheckScannerService.class);
 
     private boolean configureNotificationManager(String containerId, String automationManagerHost, int
@@ -106,7 +108,6 @@ public class DependencyCheckScannerService {
             LOGGER.error(e.toString());
         }
     }
-
 
     private void validate(String automationManagerHost, int automationManagerPort, String containerId, boolean
             isFileUpload, MultipartFile zipFile, String gitUrl) throws DependencyCheckScannerException {

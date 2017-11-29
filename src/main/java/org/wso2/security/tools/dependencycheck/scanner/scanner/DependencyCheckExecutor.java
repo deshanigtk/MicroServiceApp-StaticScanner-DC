@@ -1,5 +1,5 @@
 /*
-*  Copyright (c) ${date}, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*  Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 *  WSO2 Inc. licenses this file to you under the Apache License,
 *  Version 2.0 (the "License"); you may not use this file except
@@ -15,6 +15,7 @@
 * specific language governing permissions and limitations
 * under the License.
 */
+
 package org.wso2.security.tools.dependencycheck.scanner.scanner;
 
 import org.apache.maven.shared.invoker.MavenInvocationException;
@@ -22,7 +23,6 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wso2.security.tools.dependencycheck.scanner.Constants;
 import org.wso2.security.tools.dependencycheck.scanner.NotificationManager;
 import org.wso2.security.tools.dependencycheck.scanner.config.ScannerProperties;
 import org.wso2.security.tools.dependencycheck.scanner.exception.DependencyCheckScannerException;
@@ -100,9 +100,11 @@ public class DependencyCheckExecutor extends Observable implements Runnable {
         if (isFileUpload) {
             String folderName;
             try {
-                folderName = FileHandler.extractZipFile(ScannerProperties.getDefaultProductFolderPath()+ File.separator +
+                folderName = FileHandler.extractZipFile(ScannerProperties.getDefaultProductFolderPath() + File
+                        .separator +
                         zipFileName);
-                DependencyCheckExecutor.setProductPath(ScannerProperties.getDefaultProductFolderPath() + File.separator + folderName);
+                DependencyCheckExecutor.setProductPath(ScannerProperties.getDefaultProductFolderPath() + File
+                        .separator + folderName);
                 isProductAvailable = true;
                 LOGGER.info("File successfully extracted");
                 NotificationManager.notifyFileExtracted(true);
@@ -115,7 +117,8 @@ public class DependencyCheckExecutor extends Observable implements Runnable {
             Git git;
             if (productFile.exists() || productFile.mkdir()) {
                 try {
-                    git = GitHandler.gitClone(gitUrl, gitUsername, gitPassword, ScannerProperties.getDefaultProductFolderPath());
+                    git = GitHandler.gitClone(gitUrl, gitUsername, gitPassword, ScannerProperties
+                            .getDefaultProductFolderPath());
                     isProductAvailable = GitHandler.hasAtLeastOneReference(git.getRepository());
                     LOGGER.info("File successfully cloned");
                     NotificationManager.notifyProductCloned(true);
